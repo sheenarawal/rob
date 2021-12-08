@@ -32,7 +32,7 @@
                            </div>
                            <div class="mr-5"><b>{{count($videos)}}</b> Videos</div>
                         </div>
-                        <a class="card-footer text-white clearfix small z-1" href="{{url('/allvideos')}}">
+                        <a class="card-footer text-white clearfix small z-1" href="{{route('allvideos')}}">
                         <span class="float-left">View Details</span>
                         <span class="float-right">
                         <i class="fas fa-angle-right"></i>
@@ -105,7 +105,7 @@
                            <div class="video-card-image">
                               <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
                               <a href="{{route('singlevideo',$video->slug)}}"><video id="myVid" width="100%" height="auto" loop>
-                                        <source src="{{Storage::disk('public')->url('videos/'.$video->videolink)}}" type="video/mp4">
+                                        <source src="{{asset($video->videolink)}}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video></a>
                              <!-- <div class="time">1:00</div>-->
@@ -147,7 +147,7 @@
                      <div class="col-xl-3 col-sm-6 mb-3">
                         <div class="channels-card">
                            <div class="channels-card-image">
-                              <a href="#"><{{ asset('frontend') }}/img/ class="{{ asset('frontend') }}/img/-fluid" src="{{ asset('frontend') }}/img//s1.png" alt=""></a>
+                              <a href="#"><img class="img/-fluid" src="{{ asset('frontend') }}/img//s1.png" alt=""></a>
                               <div class="channels-card-image-btn"><button type="button" class="btn btn-danger btn-sm">Subscribe <strong>1.4M</strong></button></div>
                            </div>
                            <div class="channels-card-body">

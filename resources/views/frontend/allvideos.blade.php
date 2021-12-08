@@ -1,7 +1,5 @@
-@extends('layouts.app')
-@section('content')
-@include('layouts.navbars.feheader')
-@include('layouts.navbars.fesidebar')
+@extends('frontend.header')
+@section('frontend_content')
 <div id="wrapper">
     <!-- Sidebar -->
     <!-- Component added for sidebar -->
@@ -52,21 +50,20 @@
     <hr>
   
 </div>
-<!-- /.container-fluid 
-@include('layouts.footers.fefooter');
-Sticky Footer -->
+@stop
 
-</div>
-<!-- /.content-wrapper -->
+@push('frontend_css')
+@endpush
+@push('frontend_script')
 
-</div>
+    <script>
+        document.getElementById("myVid").addEventListener("mouseover", function() {
+            this.play();
+        });
 
-<script>
-    document.getElementById("myVid").addEventListener("mouseover", function() {
-        this.play();
-    });
+        document.getElementById("myVid").addEventListener("mouseleave", function() {
+            this.pause();
+        });
+    </script>
 
-    document.getElementById("myVid").addEventListener("mouseleave", function() {
-        this.pause();
-    });
-</script>
+@endpush
