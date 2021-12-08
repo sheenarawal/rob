@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWatchlistsTable extends Migration
+class CreateVideoCategoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateWatchlistsTable extends Migration
      */
     public function up()
     {
-        Schema::create('watchlists', function (Blueprint $table) {
+        Schema::create('videos_categories', function (Blueprint $table) {
             $table->id();
-            $table->integer('auction_id');
-            $table->integer('item_id');
-            $table->integer('user_id');
+            $table->string('video_id');
+            $table->string('category_id');
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateWatchlistsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('watchlists');
+        Schema::dropIfExists('video_category');
     }
 }

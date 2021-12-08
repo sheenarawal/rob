@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAuctioneersTable extends Migration
+class CreateTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateAuctioneersTable extends Migration
      */
     public function up()
     {
-        Schema::create('auctioneers', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('contact');
-            $table->string('description');
-            $table->tinyInteger('status');
+            $table->string('title');
+            $table->string('status')->nullable();
+            $table->text('description')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateAuctioneersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('auctioneers');
+        Schema::dropIfExists('tag');
     }
 }

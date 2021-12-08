@@ -41,7 +41,7 @@ Route::any('/userregister', 'HomeController@userRegister')->name('userregister')
 Route::get('/signup', 'HomeController@register')->name('signup');
 Auth::routes();
 Route::post('/comment/{video}', 'CommentController@store')->name('comment.store');
-Route::post('/comment-reply/{message}', 'CommentReplyController@store')->name('reply.store');
+Route::post('/comment-reply/{comment}', 'CommentReplyController@store')->name('reply.store');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/challange/{video}', 'ChallangeController@store')->name('challange.store');
 
