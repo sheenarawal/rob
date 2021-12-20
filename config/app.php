@@ -175,6 +175,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /* dataTable */
+        Yajra\DataTables\DataTablesServiceProvider::class,
+
+        /* FFMpeg */
+        ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
+
+
     ],
 
     /*
@@ -226,6 +233,12 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        /*  data table */
+
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        /* FFMpeg */
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class
 
     ],
 

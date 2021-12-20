@@ -56,7 +56,7 @@
                     </div>
                     <hr>
                 </form>--}}
-                <form action="{{route('savevideo')}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
+                <form action="{{route('video.store')}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-lg-12">
@@ -133,7 +133,7 @@
                                     <div class="col-lg-12">
                                         <div class="form-group">
                                             <label for="e7">Tags (13 Tags Remaining)</label>
-                                            <input type="text" placeholder="Gaming, PS4" id="e7" class="form-control">
+                                            <input type="text" name="tags" placeholder="Gaming, PS4" id="e7" class="form-control">
                                         </div>
                                     </div>
 
@@ -207,12 +207,24 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{{route('logout')}}">Logout</a>
                 </div>
             </div>
         </div>
     </div>
 
+
+@stop
+@push('css')
+    <style>
+        .amsify-suggestags-input{
+            background: transparent;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{asset('frontend/css/amsify.suggestags.css')}}">
+@endpush
+@push('script')
+    <script src="{{asset('frontend/js/jquery.amsify.suggestags.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.iframe-transport.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.fileupload.js"></script>
@@ -314,5 +326,11 @@
             }
 
         });
+        $('#e7').amsifySuggestags({
+            trimValue: true,
+            dashspaces: true,
+            lowercase: true,
+            tagLimit: 5
+        });
     </script>
-@stop
+@endpush

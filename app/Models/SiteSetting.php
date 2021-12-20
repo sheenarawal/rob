@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class SiteSetting extends Model
 {
     //
+    protected $guarded=[];
+    protected $table = 'sites_settings';
 }

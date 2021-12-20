@@ -1,5 +1,5 @@
-@extends('layouts.app')
-@include('layouts.navbars.feheader')
+@extends('frontend.header')
+@section('frontend_content')
       <div id="wrapper">
          <!-- Sidebar -->
       <!-- Component added for sidebar -->
@@ -32,7 +32,7 @@
                            </div>
                            <div class="mr-5"><b>{{count($videos)}}</b> Videos</div>
                         </div>
-                        <a class="card-footer text-white clearfix small z-1" href="{{route('allvideos')}}">
+                        <a class="card-footer text-white clearfix small z-1" href="{{route('account.video')}}">
                         <span class="float-left">View Details</span>
                         <span class="float-right">
                         <i class="fas fa-angle-right"></i>
@@ -104,7 +104,7 @@
                         <div class="video-card">
                            <div class="video-card-image">
                               <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                              <a href="{{route('singlevideo',$video->slug)}}"><video id="myVid" width="100%" height="auto" loop>
+                              <a href="{{route('video.view',$video->slug)}}"><video id="myVid" width="100%" height="auto" loop>
                                         <source src="{{asset($video->videolink)}}" type="video/mp4">
                                         Your browser does not support the video tag.
                                     </video></a>
@@ -286,7 +286,7 @@
       <a class="scroll-to-top rounded" href="#page-top">
       <i class="fas fa-angle-up"></i>
       </a>
-      <!-- Logout Modal-->
+<!--      &lt;!&ndash; Logout Modal&ndash;&gt;
       <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -303,4 +303,5 @@
                </div>
             </div>
          </div>
-      </div>
+      </div>-->
+@stop

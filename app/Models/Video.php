@@ -14,14 +14,30 @@ class Video extends Model
     {
         return $this->belongsTo('App\Models\User','userid'); // user_id
     }
-    // public function category()
-    // {
-    //     return $this->belongsTo('App\Models\Category'); // category_id
-    // }
-    // public function tags()
-    // {
-    //     return $this->hasMany('App\Models\Tag', 'videoid', 'id');
-    // }
+    /*public function category()
+    {
+        return $this->belongsTo('App\Models\Category'); // category_id
+    }
+    public function tags()
+    {
+        return $this->hasMany('App\Models\Tag', 'videoid', 'id');
+    }*/
+    public function likes()
+    {
+        return $this->hasMany(VideoLike::class ,'video_id','id');
+    }
+
+    public function dislikes()
+    {
+        return $this->hasMany(VideoDislike::class ,'video_id','id');
+    }
+
+    public function challengeVideos()
+    {
+        return $this->hasMany(ChallengeVideo::class ,'video_id','id');
+    }
+
+
     public function comments () {
 
         return $this->hasMany('App\Models\Comment');

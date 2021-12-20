@@ -17,7 +17,7 @@ class CommentController extends Controller
         $comment = Comment::create([
             'video_id'=>$video->id,
             'user_id'=>Auth::id(),
-            'message'=>$request->comment,
+            'comment'=>$request->comment,
         ]);
         return Redirect::back()->with('success','Comment add successfully');
     }

@@ -22,7 +22,7 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{ asset('frontend/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('frontend') }}/vendor//bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    @stack('css')
 </head>
 
 <body id="page-top">
@@ -39,6 +39,6 @@
 <script src="{{ asset('frontend') }}/vendor//owl-carousel/owl.carousel.js"></script>
 <!-- Custom scripts for all pages-->
 <script src="{{ asset('frontend') }}/js/custom.js"></script>
-
+@stack('script')
 </body>
 </html>

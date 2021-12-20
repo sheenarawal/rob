@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Redirect;
-use Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
+
 class CategoryController extends Controller
 {
     //
@@ -21,10 +23,26 @@ class CategoryController extends Controller
         });
 
     }
-    public function index()
+    public function index(Request $request)
     {
         $data =  Category::all();
-        return view('admin.categories.index')->with('data', $data);
+        if ($request->ajax()){
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('parent_id', function($row){
+                    return $row->parentDetails?$row->parentDetails->title:'';
+                })
+                ->editColumn('created_at', function($row){
+                    return Carbon::parse($row->created_at)->format('d-m-Y');
+                })
+                ->addColumn('action', function($row){
+                    return $this->action($row);
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        $categories = Category::all();
+        return view('admin.categories.index',compact('categories'));
     }
 
     public function edit($id){
@@ -42,41 +60,33 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required',
         ]);
-
         if ($validator->fails()) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
-
-        $cat = new Category();
-        $cat->title = $request->title;
-        $cat->parent_id = $request->parent;
-        $cat->slug = createSlug($request->title, 'Category', 'slug');
-        $cat->save();
+        $category = Category::create([
+            'title'=>$request->title,
+            'parent_id'=>$request->parent?$request->parent:'0',
+            'slug'=> createSlug($request->title, 'Category', 'slug'),
+        ]);
         return redirect('admin/category')->with('status','saved successfully');
     }
 
-    public function update(Request $request, $id){
-        
-        $validator = Validator::make($request->all(), [
-            'title' => 'required',
-           
+    public function update(Request $request, $id)
+    {
+        $category =Category::findOrFail($id);
+        $validator = Validator::make($request->all(),
+            ['title' => 'required']
+        );
+        if ($validator->fails()) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+        $category->update([
+            'title'=>$request->title,
+            'parent_id'=>$request->parent?$request->parent:'0',
+            'slug'=> createSlug($request->title, 'Category', 'slug'),
         ]);
 
-        if ($validator->fails()) {
-            return Redirect::back()
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-
-        $cat = Category::find($id);
-
-        $cat->title = $request->title;
-        $cat->parent_id = $request->parent;
-       
-        $cat->slug = createSlug($request->title, 'Category', 'slug',$id);
-        
-        $cat->save();
-        return redirect('admin/category')->with('status','Saved successfully');
+        return Redirect::back()->with('status','Saved successfully');
     }
 
     function delete($id){
@@ -88,5 +98,21 @@ class CategoryController extends Controller
         $cat->delete();
         return Redirect::back()->with('status','Deleted successfully');
 
+    }
+
+    public function action($cate)
+    {
+        $data = '<div class="dropdown">
+                    <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                            <a class="dropdown-item edit_category" data-toggle="modal" href="#edit_category" 
+                                data-id="'.$cate->id.'" data-cate_title="'.$cate->title.'" 
+                                data-cate_parent="'.$cate->parent_id.'">Edit</a>
+                            <a class="dropdown-item" href="'.route('category.delete', $cate->id).'">Delete</a>
+                    </div>
+                </div>';
+        return $data;
     }
 }
