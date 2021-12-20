@@ -15,4 +15,8 @@ class VideoCategory extends Model
     {
         return $this->belongsTo(Video::class,'video_id','id');
     }
+	public function CategoryDetail()
+    {
+        return $this->belongsTo(Category::class,'category_id','id');
+    }
 }

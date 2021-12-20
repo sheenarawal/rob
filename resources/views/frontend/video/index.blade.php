@@ -70,14 +70,20 @@
                                                                     <a href="#">{{$video->title}}</a>
                                                                 </div>
                                                                 <div class="video-page text-success">
-                                                                    Education
-                                                                    <a title="" data-placement="top"
-                                                                                 data-toggle="tooltip" href="#"
-                                                                                 data-original-title="Verified"><i
-                                                                                class="fas fa-check-circle text-success"></i></a>
+                                                                    @if(count($video->Category)>0)
+                                                                        @foreach($video->Category as $cateData)
+                                                                            @if($cateData->CategoryDetail)
+                                                                            <a data-placement="top" data-toggle="tooltip"
+                                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}" data-original-title="Verified">
+                                                                                {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                                <i class="fas fa-check-circle text-success"></i>
+                                                                            </a>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @endif
                                                                 </div>
                                                                 <div class="video-view">
-                                                                    <i class="fas fa-calendar-alt"></i> {{$video->recording_date }}
+                                                                    <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
                                                                 </div>
                                                             </div>
                                                         </div>
