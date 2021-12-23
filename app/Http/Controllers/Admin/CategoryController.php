@@ -80,7 +80,7 @@ class CategoryController extends Controller
         if ($validator->fails()) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
-        $category->update([
+       $abc = $category->update([
             'title'=>$request->title,
             'parent_id'=>$request->parent?$request->parent:'0',
             'slug'=> createSlug($request->title, 'Category', 'slug'),

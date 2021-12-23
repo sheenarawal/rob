@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ChallengeMail;
 use App\Models\Category;
 use App\Models\Challenge;
 use App\Models\ChallengeVideo;
@@ -10,6 +11,7 @@ use App\Models\VideoCategory;
 use App\Models\VideoTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -18,12 +20,23 @@ class ChallengeController extends Controller
 {
 
 
-    public function create(Video $video)
+    public function create($slug)
     {
+        $video = Video::firstWhere('slug',$slug);
+        if (!$video){
+            return abort('404');
+        }
         $challenge = Challenge::create([
             'user_id'=>Auth::id(),
             'video_id'=>$video->id
         ]);
+        $data = [
+            'subject'=>'Some one challenge your video',
+            'name'=>Auth::user()->display_name,
+            'title'=>$video->title,
+            'url'=>route('video.view',$video->slug),
+        ];
+        Mail::to($video->user->email)->send(new ChallengeMail($data));
         return Redirect::back()->with('success','Challenged Successfully');
     }
 
@@ -34,8 +47,13 @@ class ChallengeController extends Controller
         return Redirect::back()->with('success','Challenged '.$status.' Successfully');
     }
 
-    public function video(Request $request, Video $video)
+    public function video(Request $request, $video)
     {
+        $video = Video::firstWhere('slug',base64_decode($video));
+        if (!$video)
+        {
+            return abort('404');
+        }
         if ($request->all()){
             //dd($request->all());
             $validator = Validator::make($request->all(), [

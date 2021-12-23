@@ -17,13 +17,13 @@
     </form>
     <!-- Navbar -->
     <ul class="navbar-nav ml-auto ml-md-0 osahan-right-navbar">
-        <li class="nav-item dropdown no-arrow mx-1">
+        <li class="nav-item dropdown no-arrow mx-1 d-none">
             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
                 <span class="badge badge-success">2</span>
             </a>
         </li>
-        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role ==0)
+        @if(\Illuminate\Support\Facades\Auth::check())
             <li class="nav-item mx-1">
                 <a class="nav-link" href="{{route('video.create')}}">
                     <i class="fas fa-plus-circle fa-fw"></i>

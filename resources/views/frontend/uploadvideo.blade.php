@@ -9,7 +9,7 @@
         <div id="content-wrapper">
             <div class="container-fluid upload-details">
 
-                {{--<form class="d-none">
+            {{--<form id="upload_video" class="" action="{{route('uploadVideo')}}" method="post" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="main-title">
@@ -48,7 +48,7 @@
                                     <h4 class="mt-5">Select Video files to upload</h4>
                                     <p class="land">or drag and drop video files</p>
                                     <div class="mt-4">
-                                        <input id="video" class="btn btn-outline-primary" type="file" name="files[]" onchange=""/>
+                                        <input id="video" class="btn btn-outline-primary" type="file" name="file" onchange=""/>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                     </div>
                     <hr>
                 </form>--}}
-                <form action="{{route('video.store')}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
+                <form class="" action="{{route('video.store')}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-lg-12">
@@ -110,9 +110,9 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label for="e9">Language in Video (Optional)</label>
-                                            <select id="language" class="custom-select">
+                                            <select id="language" class="custom-select" name="language">
                                                 @foreach($languages as $l)
-                                                    <option value="{{$l}}" @if($l=='english' ) {{'selected'}} @endif>{{$l}}</option>
+                                                    <option value="{{$l}}" @if($l=='English' ) {{'selected'}} @endif>{{$l}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -273,13 +273,30 @@
                 },
                 beforeSend: function () {
                     $(".preload").fadeIn('fast');
+                },
+                progressall: function (e, data) {
+                    setProgressBar(parseInt(data.loaded / data.total * 100, 10));
+                },
+                done: function (e, data) {
+                    $('#upload-status').text("Uploading Complete!");
                 }
             })
 
         }
-        $("#video").change(function(e) {
+        function setProgressBar(percentage) {
+            $('#progress .progress-bar').css(
+                'width',
+                percentage + '%'
+            ).text(percentage + '%');
+        }
+
+        {{--$("#video").change(function(e) {
+            $('.osahan-title').text()
+            $('.osahan-size').text()
             var token = $('input[name=_token]').val()
             var file = e.target.files[0];
+            console.log(file)
+            var sizeInMB = (file.size / (1024*1024)).toFixed(2);
             // Validate video file type
             if (["video/mp4"].indexOf(file.type) === -1) {
                 alert("Only 'MP4' video format allowed.");
@@ -288,32 +305,41 @@
                 $('.video-preview-outer').removeClass('d-none')
                 $('.video-outer').addClass('d-none')
                 document.getElementById('img_preview').src = window.URL.createObjectURL(this.files[0])
+                $('.osahan-title').text(file.name)
+                $('.osahan-size').text(sizeInMB + 'MB')
+                var formData = new FormData();;
+                formData.append('_token','{{csrf_token()}}');
+                formData.append('video', file, file.name);
+                console.log(formData)
+                var xhr = new XMLHttpRequest();
 
-                $(this).fileupload({
-                    dataType: 'json',
-                    type: 'POST',
-                    url: "{{route('video.store')}}",
-                    add: function (e, data) {
-                        var files = $(this).text(data.files[0].name);
-                        console.log(files)
-                        $('#upload-status').text("Your Video is still uploading, please keep this page open until it's done.");
-                        setProgressBar(0);
-                        data.submit();
-                    },
-                    progressall: function (e, data) {
-                        setProgressBar(parseInt(data.loaded / data.total * 100, 10));
-                    },
-                    done: function (e, data) {
-                        $('#upload-status').text("Uploading Complete!");
+                // Open the connection
+                xhr.open('POST', '{{route('uploadVideo')}}', true);
+
+                xhr.upload.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        console.log(percentComplete);
+                        $('.progress-bar').css({
+                            width: percentComplete * 100 + '%'
+                        });
+                        if (percentComplete === 1) {
+                            $('.progress-bar').addClass('hide');
+                        }
                     }
-                });
+                }, false);
+                xhr.addEventListener("progress", function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        console.log(percentComplete);
+                        $('.progress-bar').css({
+                            width: percentComplete * 100 + '%'
+                        });
+                    }
+                }, false);
 
-                function setProgressBar(percentage) {
-                    $('#progress .progress-bar').css(
-                        'width',
-                        percentage + '%'
-                    ).text(percentage + '%');
-                }
+                // Send the data.
+                xhr.send(formData);
 
                 /*$.ajax({
                    type:"post",
@@ -325,7 +351,7 @@
               });*/
             }
 
-        });
+        });--}}
         $('#e7').amsifySuggestags({
             trimValue: true,
             dashspaces: true,

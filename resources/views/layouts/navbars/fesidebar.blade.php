@@ -12,7 +12,7 @@
             <span>My Account</span>
         </a>
     </li>
-    @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role ==0)
+    @if(\Illuminate\Support\Facades\Auth::check() )
         <li class="nav-item {{ request()->is('video/upload*') ? 'active' : ''}}">
             <a class="nav-link" href="{{route('video.create')}}">
                 <i class="fas fa-fw fa-cloud-upload-alt"></i>

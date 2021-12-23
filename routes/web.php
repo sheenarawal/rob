@@ -41,6 +41,8 @@ Route::group(['middleware'=>'auth'],function (){
     Route::get('logout', [AuthController::class,'logout'])->name('logout');
 
     Route::get('/', [VideoController::class, 'index'])->name('index');
+    //Route::post('uploadVideo', [HomeController::class, 'uploadVideo'])->name('uploadVideo');
+    Route::get('/f/{filter?}', [VideoController::class, 'filter'])->name('video.filter');
     Route::get('category/{slug}', [VideoController::class, 'category'])->name('video.category');
     Route::group(['prefix' => 'video', 'as' => 'video.'], function () {
         Route::get('show/{slug}', [VideoController::class, 'show'])->name('view');

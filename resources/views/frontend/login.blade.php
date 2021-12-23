@@ -30,9 +30,15 @@
                         <h5 class="mt-3 mb-3">Welcome to PopRival</h5>
                         <p>It is a long established fact that a reader <br> will be distracted by the readable.</p>
                     </div>
-                    @if(Session::get('error'))
+                    @if (session()->has('success'))
+                        <div class="notification">
+
+                            <div class="alert alert-primary">  {!! session('success') !!}</div>
+                        </div>
+                    @endif
+                    @if(session()->has('error'))
                         <div class="alert alert-danger">
-                            {{ Session::get('error') }}
+                            {!! session('error') !!}
                         </div>
                     @endif
                     <form action="{{route('login')}}" method="post">

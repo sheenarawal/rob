@@ -27,6 +27,7 @@ class VideoController extends Controller
 	function show($slug)
 	{
 		$video = Video::where(['slug' => $slug])->first();
+		if (!$video){ return abort('404');}
 		$challenge = Challenge::where(['video_id'=>$video->id,'user_id'=>Auth::id()])->first();
 		//dd($challenge);
         $video_list = Video::where('slug','!=',$slug)->get();
@@ -58,7 +59,7 @@ class VideoController extends Controller
             'recording_date' => 'required',
             'recording_location' => 'required',
             'description' => 'required',
-            'video' =>  'required|mimes:mp4,mov,ogg,qt'
+            'video' =>  'required'
 
         ], [
             "categories.required" => "Choose at least one category"
@@ -97,6 +98,7 @@ class VideoController extends Controller
                 'desc'=>$request->description,
                 'recording_date'=>$request->recording_date,
                 'recording_location'=>$request->recording_location,
+                'video_language'=>$request->language,
                 'is_comment_enable_status'=>$request->is_comment_enable_status,
                 'slug'=>createSlug($request->title, 'Video', 'slug'),
                 'userid'=>Auth::id(),
@@ -212,5 +214,27 @@ class VideoController extends Controller
             }
         }
         return view('frontend.video.category-video',compact('videos'));
+    }
+
+    public function filter($filter)
+    {
+        $videos = null;
+        $categories = Category::orderBy('id','desc')->get();
+        $category = Category::firstWhere('slug',$filter);
+        if ($category){
+            if (count($category->latestVideoCat)>0){
+                foreach ($category->latestVideoCat as $videoCat){
+                    $videos[] = $videoCat->video;
+                }
+            }
+        }
+        $slug = in_array($filter,['oldest','newest']);
+        if ($filter == 'oldest' ){
+            $videos = Video::all();
+        }
+        if ($filter == 'newest' ){
+            $videos = Video::orderBy('id','desc')->get();
+        }
+        return view('frontend.video.index',compact('videos','categories','filter'));
     }
 }

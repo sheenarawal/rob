@@ -37,7 +37,7 @@
                                 <a class="nav-link active" id="video-tab" data-toggle="tab" href="#video" role="tab"
                                    aria-controls="video" aria-selected="true">Videos</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item d-none">
                                 <a class="nav-link" id="playlist-tab" data-toggle="tab" href="#playlist" role="tab"
                                    aria-controls="playlist" aria-selected="true">Playlist</a>
                             </li>
@@ -45,11 +45,11 @@
                                 <a class="nav-link" id="challenges-tab" data-toggle="tab" href="#challenges" role="tab"
                                    aria-controls="challenges" aria-selected="true">Challenges</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item d-none">
                                 <a class="nav-link" id="discussion-tab" data-toggle="tab" href="#discussion" role="tab"
                                    aria-controls="discussion" aria-selected="true">Discussion</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item d-none">
                                 <a class="nav-link" id="home-tab" data-toggle="tab" href="#about" role="tab"
                                    aria-controls="about" aria-selected="true">About</a>
                             </li>
@@ -66,7 +66,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <form class="form-inline my-2 my-lg-0">
+                        <form class="form-inline my-2 my-lg-0  d-none">
                             <input class="form-control form-control-sm mr-sm-1" type="search" placeholder="Search"
                                    aria-label="Search">
                             <button class="btn btn-outline-success btn-sm my-2 my-sm-0" type="submit"><i
@@ -81,7 +81,7 @@
                 <div class="video-block section-padding tab-content" id="myTabContent">
                     <div class="col tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 d-none">
                                 <div class="main-title">
                                     <div class="btn-group float-right right-action">
                                         <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
@@ -111,20 +111,28 @@
                                                        src="{{asset($video->videolink)}}"
                                                        onloadedmetadata="get_duration()"></video>
                                             </a>
-                                            <div class="time duaration_{{$i}}">3:50</div>
+                                            <div class="time duaration_{{$i}}">00:00</div>
                                         </div>
                                         <div class="video-card-body">
                                             <div class="video-title">
                                                 <a href="{{route('video.view',$video->slug)}}">{{$video->title}}</a>
                                             </div>
                                             <div class="video-page text-success">
-                                                Education <a title="" data-placement="top" data-toggle="tooltip"
-                                                             href="#" data-original-title="Verified"><i
-                                                            class="fas fa-check-circle text-success"></i></a>
+                                                @if(count($video->Category)>0)
+                                                    @foreach($video->Category as $cateData)
+                                                        @if($cateData->CategoryDetail)
+                                                            <a data-placement="top" data-toggle="tooltip"
+                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                               data-original-title="Verified">
+                                                                {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                <i class="fas fa-check-circle text-success"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             </div>
                                             <div class="video-view">
-                                                1.8M views &nbsp;<i
-                                                        class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans()}}
+                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
                                             </div>
                                         </div>
                                     </div>
@@ -155,7 +163,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @php($i++)
+                                    @php($i=1)
                                     @foreach($challenges as $challenge)
                                         <tr>
                                             <th scope="row">{{$i}}</th>
@@ -213,12 +221,23 @@
 
         @push('frontend_script')
             <script>
+                $(document).ready(function () {
+                    let video = $(".video_list_item");
+                    video.each(function () {
+                        $(this).mouseover(function () { this.play(); });
+                        $(this).mouseout(function () { this.pause(); });
+                    })
+                })
                 function get_duration() {
                     $(".video_list_item").each(function (index, element) {
                         var value = element.duration;
-                        var duration_min = Math.floor(value / (3600 / 60));
-                        var duration_sec = Math.floor(value % 60);
-                        var elemtent_get = $('.duaration_' + index).text(duration_min + ':' + duration_sec)
+                        if (value){
+                            var duration_min = Math.floor(value / (3600 / 60));
+                            var duration_sec = Math.floor(value % 60);
+                            var min = (duration_min < 9) ? '0'+duration_min:duration_min;
+                            var sec = (duration_sec < 9) ? '0'+duration_sec:duration_sec;
+                            var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
+                        }
                     });
 
                 }

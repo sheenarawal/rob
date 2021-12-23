@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Askbootstrap">
     <meta name="author" content="Askbootstrap">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <title>VIDOE - Video Streaming Website HTML Template</title>
     <!-- Favicon Icon -->
     <link rel="icon" type="image/png" href="{{ asset('frontend/img/favicon.png') }}">

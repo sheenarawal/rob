@@ -15,11 +15,10 @@
                     </div>
                 </div>
 
-                <div class="top-category section-padding mb-4">
+                {{-- <div class="top-category section-padding mb-4">
 
                     @foreach($categories as $category)
                         @if($category->latestVideoCat->count() > 0)
-
                             <div class="row mb-4">
                                 <div class="col-md-12">
                                     <div class="main-title">
@@ -46,6 +45,7 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="owl-carousel owl-carousel-categoryVideo">
+                                        @php $i = 1 @endphp
                                         @foreach($category->latestVideoCat as $cate)
                                             @php $video = $cate->video @endphp
                                             @if($video)
@@ -57,13 +57,11 @@
                                                                     <i class="fas fa-play-circle"></i>
                                                                 </a>
                                                                 <a href="{{route('video.view',$video->slug)}}">
-                                                                    <video id="myVid" width="100%" height="auto" loop>
-                                                                        <source src="{{asset($video->videolink)}}"
-                                                                                type="video/mp4">
-                                                                        Your browser does not support the video tag.
-                                                                    </video>
+                                                                    <video id="myVid" class="img-fluid video_list_item"
+                                                                           src="{{asset($video->videolink)}}" muted
+                                                                           onloadedmetadata="get_duration()"></video>
                                                                 </a>
-                                                                <!-- <div class="time">1:00</div>-->
+                                                                <div class="time duration_{{$i}}">1:00</div>
                                                             </div>
                                                             <div class="video-card-body">
                                                                 <div class="video-title text-uppercase">
@@ -73,11 +71,13 @@
                                                                     @if(count($video->Category)>0)
                                                                         @foreach($video->Category as $cateData)
                                                                             @if($cateData->CategoryDetail)
-                                                                            <a data-placement="top" data-toggle="tooltip"
-                                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}" data-original-title="Verified">
-                                                                                {{ucfirst($cateData->CategoryDetail->title)}}
-                                                                                <i class="fas fa-check-circle text-success"></i>
-                                                                            </a>
+                                                                                <a data-placement="top"
+                                                                                   data-toggle="tooltip"
+                                                                                   href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                                                   data-original-title="Verified">
+                                                                                    {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                                    <i class="fas fa-check-circle text-success"></i>
+                                                                                </a>
                                                                             @endif
                                                                         @endforeach
                                                                     @endif
@@ -89,49 +89,97 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @php($i++)
                                             @endif
+
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
                         @endif
                     @endforeach
-                </div>
-                {{--<div class="row">
-                    <div class="col">
+                </div> --}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="main-title">
+                            <div class="btn-group float-right right-action">
+                                <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    @foreach($categories as $category)
+                                        <a class="dropdown-item" href="{{route('video.filter',$category->slug)}}">
+                                            {{$category->title}}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="btn-group float-right right-action">
+                                Short by
+                                <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="{{route('video.filter','oldest')}}">
+                                        Oldest
+                                    </a>
+                                    <a class="dropdown-item" href="{{route('video.filter','newest')}}">
+                                        Newest
+                                    </a>
+                                </div>
+                            </div>
+                            <h6>{{isset($filter)?ucfirst($filter):''}} Videos</h6>
+                        </div>
+                    </div>
+                    <div class="col-12">
                         <div class="row ">
+                            @if($videos)
+                                @php($i = 1)
                             @foreach($videos as $video)
                                 <div class="col-xl-3 col-sm-6 mb-3 align-items-stretch">
                                     <div class="video-card">
                                         <div class="video-card-image">
                                             <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
                                             <a href="{{route('video.view',$video->slug)}}">
-                                                <video id="myVid" width="100%" height="auto" loop>
-                                                    <source src="{{asset($video->videolink)}}" type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
+                                                <video id="myVid" class="img-fluid video_list_item"
+                                                       src="{{asset($video->videolink)}}" muted
+                                                       onloadedmetadata="get_duration()"></video>
                                             </a>
-                                            <!-- <div class="time">1:00</div>-->
+                                             <div class="time duaration_{{$i}}">00:00</div>
                                         </div>
                                         <div class="video-card-body">
                                             <div class="video-title text-uppercase">
                                                 <a href="#">{{$video->title}}</a>
                                             </div>
                                             <div class="video-page text-success">
-                                                Education <a title="" data-placement="top" data-toggle="tooltip"
-                                                             href="#" data-original-title="Verified"><i
-                                                            class="fas fa-check-circle text-success"></i></a>
+                                                @if(count($video->Category)>0)
+                                                    @foreach($video->Category as $cateData)
+                                                        @if($cateData->CategoryDetail)
+                                                            <a data-placement="top"
+                                                               data-toggle="tooltip"
+                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                               data-original-title="Verified">
+                                                                {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                <i class="fas fa-check-circle text-success"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
                                             </div>
                                             <div class="video-view">
-                                                <i class="fas fa-calendar-alt"></i> {{$video->recording_date }}
+                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                @php($i++)
                             @endforeach
+                            @endif
                         </div>
                     </div>
-                </div>--}}
+                </div>
             </div>
         </div>
         <hr>
@@ -144,14 +192,13 @@
 @push('frontend_script')
 
     <script>
-        document.getElementById("myVid").addEventListener("mouseover", function () {
-            this.play();
-        });
-
-        document.getElementById("myVid").addEventListener("mouseleave", function () {
-            this.pause();
-        });
-
+        $(document).ready(function (index, element) {
+            let video = $(".video_list_item");
+            video.each(function () {
+                $(this).mouseover(function () { this.play(); });
+                $(this).mouseout(function () { this.pause(); });
+            })
+        })
 
         const objowlcarousel = $('.owl-carousel-categoryVideo');
         if (objowlcarousel.length > 0) {
@@ -181,6 +228,20 @@
                 nav: true,
                 navText: ["<i class='fa fa-chevron-left'></i>", "<i class='fa fa-chevron-right'></i>"],
             });
+        }
+
+        function get_duration() {
+            $(".video_list_item").each(function (index, element) {
+                var value = element.duration;
+                if (value){
+                    var duration_min = Math.floor(value / (3600 / 60));
+                    var duration_sec = Math.floor(value % 60);
+                    var min = (duration_min < 9) ? '0'+duration_min:duration_min;
+                    var sec = (duration_sec < 9) ? '0'+duration_sec:duration_sec;
+                    var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
+                }
+            });
+
         }
     </script>
 

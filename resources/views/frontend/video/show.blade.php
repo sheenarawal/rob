@@ -42,7 +42,8 @@
                                                 @php $status = \App\Models\Challenge::status($challenge->status) @endphp
                                                 @if($challenge->status == 2)
 
-                                                    <a class="nav-link" href="{{route('challenge.video.store',$video->id)}}">
+                                                    <a class="nav-link"
+                                                       href="{{route('challenge.video.store',base64_encode($video->slug))}}">
                                                         <i class="fas fa-fw fa-cloud-upload-alt"></i>
                                                         <span>Upload Video</span>
                                                     </a>
@@ -50,13 +51,14 @@
                                                     <span class="h6">Wait for challenge accept ! Your challenge is bing {{$status}}</span>
                                                 @endif
                                             @else
-                                                <a href="{{route('challenge.create',$video->id)}}" id="challange"
+                                                <a href="{{route('challenge.create',$video->slug)}}" id="challange"
                                                    class="btn btn-outline-danger ml-5" onclick="funChallange()">Challenge </a>
                                             @endif
                                         @endif
                                     @endguest
                                     <p class="text-right"><i class="fas fa-map-marker-alt text-warning"> </i>
-                                        <b>{{$video->recording_location}}</b> Published on {{$video->created_at}}</p>
+                                        <b>{{$video->recording_location}}</b> Published
+                                        on {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}</p>
                                 </div>
                             </div>
                             <div class="single-video-info-content box mb-3 text-dark">
@@ -64,12 +66,11 @@
                                 <p>{{$video->desc}}</p>
                                 <p>Language : {{$video->video_language}} </p>
                                 <p class="tags mb-0">
-                                    <span><a href="#">Uncharted 4</a></span>
-                                    <span><a href="#">Playstation 4</a></span>
-                                    <span><a href="#">Gameplay</a></span>
-                                    <span><a href="#">1080P</a></span>
-                                    <span><a href="#">ps4Share</a></span>
-                                    <span><a href="#">+ 6</a></span>
+                                    @if(count($video->tags)>0)
+                                        @foreach($video->tags as $tag)
+                                            <span><a href="#">{{$tag->title}}</a></span>
+                                        @endforeach
+                                    @endif
                                 </p>
                                 <br>
                                 @if($video->is_comment_enable_status==1)
@@ -307,87 +308,126 @@
                             <div class="single-video-right">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <!-- <div class="adblock">
-                                        <div class="img">
-                                           Google AdSense<br>
-                                           336 x 280
-                                        </div>
-                                     </div> -->
-                                        <div class="main-title">
-                                            <div class="btn-group float-right right-action">
-                                                <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
-                                                   aria-haspopup="true" aria-expanded="false">
-                                                    Sort by <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="#"><i class="fas fa-fw fa-star"></i>
-                                                        &nbsp; Top Rated</a>
-                                                    <a class="dropdown-item" href="#"><i
-                                                                class="fas fa-fw fa-signal"></i> &nbsp; Viewed</a>
-                                                    <a class="dropdown-item" href="#"><i
-                                                                class="fas fa-fw fa-times-circle"></i> &nbsp; Close</a>
-                                                </div>
+                                        <!--<div class="adblock">
+                                            <div class="img">
+                                                Google AdSense<br>
+                                                336 x 280
                                             </div>
+                                        </div>-->
+                                        <div class="main-title">
+                                            <!--<div class="btn-group float-right right-action">
+                                                    <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
+                                                       aria-haspopup="true" aria-expanded="false">
+                                                        Sort by <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="#"><i class="fas fa-fw fa-star"></i>
+                                                            &nbsp; Top Rated</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                    class="fas fa-fw fa-signal"></i> &nbsp; Viewed</a>
+                                                        <a class="dropdown-item" href="#"><i
+                                                                    class="fas fa-fw fa-times-circle"></i> &nbsp; Close</a>
+                                                    </div>
+                                                </div> -->
                                             <h6>Related Videos</h6>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        @if($video->challengeVideos->count() > 0)
-                                        @php $i = 0; @endphp
-                                        @foreach($video->challengeVideos as $list)
-                                            @if($list->challengeVideo)
-                                                <div class="video-card video-card-list">
-                                                <div class="video-card-image">
-                                                    <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                                                    <a href="{{route('video.view',$list->challengeVideo->slug)}}">
-                                                        <video class="img-fluid video_list_item"
-                                                               src="{{asset($list->challengeVideo->videolink)}}"
-                                                               onloadedmetadata="get_duration()"></video>
-                                                    </a>
-                                                    <div class="time duaration_{{$i}}">0:00</div>
-                                                </div>
-                                                <div class="video-card-body">
-                                                    <div class="btn-group float-right right-action">
-                                                        <a href="#" class="right-action-link text-gray"
-                                                           data-toggle="dropdown" aria-haspopup="true"
-                                                           aria-expanded="false">
-                                                            <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                                        </a>
-                                                        <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" href="#"><i
-                                                                        class="fas fa-fw fa-star"></i> &nbsp; Top Rated</a>
-                                                            <a class="dropdown-item" href="#"><i
-                                                                        class="fas fa-fw fa-signal"></i> &nbsp;
-                                                                Viewed</a>
-                                                            <a class="dropdown-item" href="#"><i
-                                                                        class="fas fa-fw fa-times-circle"></i> &nbsp;
-                                                                Close</a>
+                                        @if($video->Category->count() > 0)
+                                            @php($i = 0)
+                                            @foreach($video->Category as $list)
+                                                @if($list->video)
+                                                    <div class="video-card video-card-list">
+                                                        <div class="video-card-image">
+                                                            <a class="play-icon" href="#"><i
+                                                                        class="fas fa-play-circle"></i></a>
+                                                            <a href="{{route('video.view',$list->video->slug)}}">
+                                                                <video class="img-fluid video_list_item"
+                                                                       src="{{asset($list->video->videolink)}}"
+                                                                       onloadedmetadata="get_duration()"></video>
+                                                            </a>
+                                                            <div class="time duaration_{{$i}}">0:00</div>
+                                                        </div>
+                                                        <div class="video-card-body">
+                                                            <div class="video-title">
+                                                                <a href="{{route('video.view',$list->video->slug)}}">{{$list->video->title}}</a>
+                                                            </div>
+                                                            <div class="video-page text-success">
+                                                                @if(count($video->Category)>0)
+                                                                    @foreach($list->video->Category as $cateData)
+                                                                        @if($cateData->CategoryDetail)
+                                                                            <a data-placement="top"
+                                                                               data-toggle="tooltip"
+                                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                                               data-original-title="Verified">
+                                                                                {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                                <i class="fas fa-check-circle text-success"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endif
+                                                            </div>
+                                                            <div class="video-view">
+                                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="video-title">
-                                                        <a href="{{route('video.view',$list->challengeVideo->slug)}}">{{$list->challengeVideo->title}}</a>
-                                                    </div>
-                                                    <div class="video-page text-success">
-                                                        Education <a title="" data-placement="top" data-toggle="tooltip"
-                                                                     href="#" data-original-title="Verified"><i
-                                                                    class="fas fa-check-circle text-success"></i></a>
-                                                    </div>
-                                                    <div class="video-view">
-                                                        1.8M views &nbsp;<i class="fas fa-calendar-alt"></i> 11 Months
-                                                        ago
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endif
-                                            @php ($i++)
-                                        @endforeach
+                                                @endif
+                                                @php ($i++)
+                                            @endforeach
                                         @endif
+
                                         <div class="adblock mt-0 d-none">
                                             <div class="img">
                                                 Google AdSense<br>
                                                 336 x 280
                                             </div>
                                         </div>
+                                        <hr>
+
+                                        @if($video->challengeVideos->count() > 0)
+                                            @php($i = 0)
+                                            @foreach($video->challengeVideos as $list)
+                                                @if($list->challengeVideo)
+                                                    <div class="video-card video-card-list">
+                                                        <div class="video-card-image">
+                                                            <a class="play-icon" href="#"><i
+                                                                        class="fas fa-play-circle"></i></a>
+                                                            <a href="{{route('video.view',$list->challengeVideo->slug)}}">
+                                                                <video class="img-fluid video_list_item"
+                                                                       src="{{asset($list->challengeVideo->videolink)}}"
+                                                                       onloadedmetadata="get_duration()"></video>
+                                                            </a>
+                                                            <div class="time duaration_{{$i}}">0:00</div>
+                                                        </div>
+                                                        <div class="video-card-body">
+                                                            <div class="video-title">
+                                                                <a href="{{route('video.view',$list->challengeVideo->slug)}}">{{$list->challengeVideo->title}}</a>
+                                                            </div>
+                                                            <div class="video-page text-success">
+                                                                @if(count($video->Category)>0)
+                                                                    @foreach($video->Category as $cateData)
+                                                                        @if($cateData->CategoryDetail)
+                                                                            <a data-placement="top"
+                                                                               data-toggle="tooltip"
+                                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                                               data-original-title="Verified">
+                                                                                {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                                <i class="fas fa-check-circle text-success"></i>
+                                                                            </a>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endif
+                                                            </div>
+                                                            <div class="video-view">
+                                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                @php ($i++)
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -483,18 +523,30 @@
             return result;
         }
 
+        $(document).ready(function () {
+            let video = $(".video_list_item");
+            video.each(function () {
+                $(this).mouseover(function () {
+                    this.play();
+                });
+                $(this).mouseout(function () {
+                    this.pause();
+                });
+            })
+        })
+
         function get_duration() {
             $(".video_list_item").each(function (index, element) {
                 var value = element.duration;
-                console.log(value)
-                var duration_min = Math.floor(value / (3600 / 60));
-                var duration_sec = Math.floor(value % 60);
-                //duration_format(duration)
-                var elemtent_get = $('.duaration_' + index).text(duration_min + ':' + duration_sec)
+                if (value) {
+                    var duration_min = Math.floor(value / (3600 / 60));
+                    var duration_sec = Math.floor(value % 60);
+                    var min = (duration_min < 9) ? '0' + duration_min : duration_min;
+                    var sec = (duration_sec < 9) ? '0' + duration_sec : duration_sec;
+                    var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
+                }
             });
 
-            /*var video_duration = $('#videoid').duration
-            alert(video_duration); // or window.alert(video_duration);*/
         }
     </script>
     <script type="text/javascript">

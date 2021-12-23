@@ -7,21 +7,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class commonMail extends Mailable
+class ChallengeMail extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $details;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($details)
+    public $data;
+
+
+    public function __construct($data)
     {
-        //
-        $this->details = $details;
+        $this->data = $data;
     }
 
     /**
@@ -31,9 +31,8 @@ class commonMail extends Mailable
      */
     public function build()
     {
-
-        return $this->subject($this->details['subject'])
-            ->from('developertestnew@gmail.com')
-            ->view('emails.' . $this->details['view']);
+        return $this->subject($this->data['subject'])
+            ->from('testchallenge@gmail.com')
+            ->view('emails.challenge');
     }
 }

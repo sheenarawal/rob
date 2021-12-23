@@ -89,7 +89,7 @@ class AuthController extends Controller
             );
             //\Mail::to($data['regemail'])->send(new \App\Mail\commonMail($details));
 
-            return Redirect::back()->with('success', 'Registered Successfully!!!');
+            return Redirect::route('login')->with('success', 'Registered Successfully!!!');
         }
         return view('frontend.register');
     }
