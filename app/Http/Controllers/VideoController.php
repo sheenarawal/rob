@@ -84,14 +84,14 @@ class VideoController extends Controller
             $temp = 'videos/temp/' . $name;
             Storage::disk('public')->put($temp, file_get_contents($file));
 
-            $exectPath = public_path('videos\upload');
-            $temPath = public_path('videos\temp');
+            $exectPath = public_path('videos/upload');
+            $temPath = public_path('videos/temp');
             $time = '00:01:00';
             $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
             $res = shell_exec($cmd);
 
-            $uploadvideo =public_path('videos/upload/'.$name);
-            Storage::disk('s3')->put('videos/'.$name, file_get_contents($uploadvideo));
+            $uploadvideo = $exectPath.'/'.$name;
+            Storage::disk('s3')->put('videos/'.$name, file_get_contents($exectPath.'/'.$name));
             $file_url = Storage::disk('s3')->url('videos/'.$name);
             $inputData = [
                 'title'=>$request->title,

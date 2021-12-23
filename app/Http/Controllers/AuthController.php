@@ -96,13 +96,7 @@ class AuthController extends Controller
 
     public function editInfo()
     {
-        if (Auth::check()) {
-            $userid = Auth::user()->id;
-            $user = User::find($userid);
-            return view('frontend.profile.edit', compact('user'));
-        } else {
-            return view('frontend.login');
-        }
+
     }
 
     public function logout()

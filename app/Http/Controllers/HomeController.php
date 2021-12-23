@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Challenge;
+use App\Models\Profile;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Support\Facades\Hash;
@@ -21,7 +22,8 @@ class HomeController extends Controller
         $videos = Video::where(['userid' => Auth::id()])->paginate(12);
         $videos_id = Video::where(['userid' => Auth::id()])->select('id')->get()->toArray();
         $challenges = Challenge::whereIn('video_id',$videos_id)->get();
-        return view('frontend.profile.view', compact('videos','challenges'));
+        $profile = Profile::firstWhere('user_id',Auth::id());
+        return view('frontend.profile.view', compact('videos','challenges','profile'));
 
     }
 
