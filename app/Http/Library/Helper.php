@@ -350,3 +350,12 @@ function cate_nav()
     return \App\Models\Category::all();
 
 }
+
+function profile_image()
+{
+    $profile = \App\Models\Profile::firstWhere('user_id',\Illuminate\Support\Facades\Auth::id());
+    $data = asset('frontend/img/user.png');
+    if ($profile && $profile->profile_photo) {$data = $profile->profile_photo;}
+    return $data;
+
+}

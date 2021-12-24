@@ -31,16 +31,15 @@
                 </a>
             </li>
         @endif
-
         <li class="nav-item dropdown no-arrow osahan-right-navbar-user">
             <a class="nav-link dropdown-toggle user-dropdown-link" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img alt="Avatar" src="{{ asset('frontend') }}/img/user.png">
+                <img alt="Avatar" src="{{ profile_image()}}">
                 @if(Auth::check())
                     {{Auth::user()->first_name}} {{Auth::user()->last_name}}
                 @endif
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="{{url('account/edit')}}"><i class="fas fa-fw fa-cog"></i> &nbsp; Settings</a>
+                <a class="dropdown-item" href="{{route('account.profile')}}"><i class="fas fa-fw fa-cog"></i> &nbsp; Settings</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-fw fa-sign-out-alt"></i> &nbsp; Logout</a>
             </div>

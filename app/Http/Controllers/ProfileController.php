@@ -26,18 +26,23 @@ class ProfileController extends Controller
         if ($file = $request->file('profile_photo')){
             $type = $file->getClientOriginalExtension();
             $name = 'photo-' . time() . '.' . $type;
-            $photo = 'upload/image/' . $name;
-            $profile_photo = $photo;
-            Storage::disk('public')->put($photo, file_get_contents($file));
+            $photo = 'videos/temp' . $name;
+            Storage::disk('s3')->put('images/'.$name,file_get_contents($file));
+            $file_url = Storage::disk('s3')->url('images/'.$name);
+            $profile_photo = $file_url;
+            //Storage::disk('public')->put($photo, file_get_contents($file));
         }else{
             $profile_photo = $profile?$profile->profile_photo:'';
         }
         if ($file = $request->file('cover_photo')){
             $type = $file->getClientOriginalExtension();
             $name = 'photo-' . time() . '.' . $type;
-            $photo = 'upload/image/' . $name;
-            $cover_photo = $photo;
-            Storage::disk('public')->put($photo, file_get_contents($file));
+            $photo = 'videos/temp' . $name;
+
+            //Storage::disk('public')->put($photo, file_get_contents($file));
+            Storage::disk('s3')->put('images/'.$name,file_get_contents($file));
+            $file_url = Storage::disk('s3')->url('images/'.$name);
+            $cover_photo = $file_url;
         }else{
             $cover_photo = $profile?$profile->cover_photo:'';
         }

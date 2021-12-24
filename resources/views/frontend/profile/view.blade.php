@@ -7,9 +7,17 @@
 
         <div class="single-channel-page" id="content-wrapper">
             <div class="single-channel-image">
-                <img class="img-fluid" alt="" src="{{asset('frontend/img/channel-banner.png')}}">
+                @if($profile && $profile->cover_photo)
+                    <img class="img-fluid" alt="" src="{{asset($profile->cover_photo)}}" style="max-height: 330px">
+                @else
+                    <img class="img-fluid" alt="" src="{{asset('frontend/img/channel-banner.png')}}">
+                @endif
                 <div class="channel-profile">
-                    <img class="channel-profile-img" alt="" src="{{asset('frontend/img/s2.png')}}">
+                    @if($profile && $profile->profile_photo)
+                    <img class="channel-profile-img" alt="" src="{{asset($profile->profile_photo)}}">
+                    @else
+                        <img class="channel-profile-img" alt="" src="{{asset('frontend/img/s2.png')}}">
+                    @endif
                     <div class="social hidden-xs">
                         Social &nbsp;
                         <a class="fb" href="#">Facebook</a>
@@ -21,10 +29,11 @@
 
             <div class="single-channel-nav">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="channel-brand" href="#">Osahan Channel <span title="" data-placement="top"
-                                                                           data-toggle="tooltip"
-                                                                           data-original-title="Verified"><i
-                                    class="fas fa-check-circle text-success"></i></span></a>
+                    <a class="channel-brand" href="#">{{ ucfirst(\Illuminate\Support\Facades\Auth::user()->display_name)}}
+                        <span title="" data-placement="top" data-toggle="tooltip"
+                              data-original-title="Verified"><i class="fas fa-check-circle text-success"></i>
+                        </span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">

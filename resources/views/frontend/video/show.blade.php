@@ -162,7 +162,7 @@
                                                                     </h6>
                                                                 </div>
                                                                 <div class="reviews-members-body">
-                                                                    <p> {!! $comment->message !!}</p>
+                                                                    <p> {!! $comment->comment !!}</p>
                                                                 </div>
                                                                 <div class="reviews-members-footer">
                                                                     <a class="total-like mr-2" href="#">

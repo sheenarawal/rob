@@ -58,7 +58,8 @@ Route::group(['middleware'=>'auth'],function (){
     Route::group(['prefix'=>'account','as'=>'account.'],function (){
         Route::get('/page/{tag?}', 'HomeController@index')->name('index');
         Route::get('video', 'HomeController@video')->name('video');
-        Route::get('edit', [AuthController::class,'editInfo'])->name('edit');
+        Route::get('edit', [ProfileController::class,'index'])->name('profile');
+        Route::post('update', [ProfileController::class,'update'])->name('update');
     });
 
     Route::group(['prefix'=>'challenge','as'=>'challenge.'],function (){
