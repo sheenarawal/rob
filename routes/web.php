@@ -38,7 +38,7 @@ Route::group(['middleware'=>'guest'],function (){
     Route::match(['get','post'],'/signup', [AuthController::class,'register'])->name('signup');
 });
 Route::group(['middleware'=>'auth'],function (){
-    Route::get('logout', [AuthController::class,'logout'])->name('logout');
+    Route::match(['get','post'],'logout', [AuthController::class,'logout'])->name('logout');
 
     Route::get('/', [VideoController::class, 'index'])->name('index');
     //Route::post('uploadVideo', [HomeController::class, 'uploadVideo'])->name('uploadVideo');
@@ -71,7 +71,7 @@ Route::group(['middleware'=>'auth'],function (){
 Route::get('/search', 'VideoController@search');
 
 Route::get('/admin', 'Admin\LoginController@index')->name('admin_login');
-Route::group(['middleware' => 'auth','prefix'=>'admin','namespace'=>'Admin'], function () {
+Route::group(['middleware' => ['auth','isAdmin'],'prefix'=>'admin','namespace'=>'Admin'], function () {
 
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 

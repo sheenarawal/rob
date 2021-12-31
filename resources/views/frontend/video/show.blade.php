@@ -119,7 +119,7 @@
                                                     <div class="reviews-members pt-0">
                                                         <div class="media">
                                                             <a href="#">
-                                                                <img class="mr-3" src="{{asset('frontend/img/s1.png')}}"
+                                                                <img class="mr-3" src="{{profile_image()}}"
                                                                      alt="Generic placeholder image"></a>
                                                             <div class="media-body">
                                                                 <form action="{{route('video.comment.store',$video->id)}}"
@@ -151,9 +151,15 @@
                                                 @foreach ($video->comments as $comment)
                                                     <div class="reviews-members">
                                                         <div class="media">
-                                                            <a href="#"><img class="mr-3"
-                                                                             src="{{asset('frontend/img/s2.png')}}"
-                                                                             alt="Generic placeholder image"></a>
+                                                            <a href="#">
+                                                                @if($comment->user && $comment->user->profileData)
+                                                                <img class="mr-3" src="{{$comment->user->profileData->profile_photo}}"
+                                                                             alt="Generic placeholder image">
+                                                                @else
+                                                                <img class="mr-3" src="{{asset('frontend/img/s2.png')}}"
+                                                                             alt="Generic placeholder image">
+                                                                @endif
+                                                            </a>
                                                             <div class="media-body">
                                                                 <div class="reviews-members-header">
                                                                     <h6 class="mb-1"><a class="text-black"
@@ -165,10 +171,7 @@
                                                                     <p> {!! $comment->comment !!}</p>
                                                                 </div>
                                                                 <div class="reviews-members-footer">
-                                                                    <a class="total-like mr-2" href="#">
-                                                                        <i class="fas fa-thumbs-up"></i> 123</a>
-                                                                    <a class="total-like" href="#">
-                                                                        <i class="fas fa-thumbs-down"></i> 02</a>
+
                                                                     <a class="btn btn-link text-success" role="button"
                                                                        data-toggle="collapse"
                                                                        href="#reply_{{$comment->id}}"
@@ -242,16 +245,7 @@
                                                                                             <p> {!! $reply->message !!}</p>
                                                                                         </div>
                                                                                         <div class="reviews-members-footer">
-                                                                                            <a class="total-like mr-2"
-                                                                                               href="#">
-                                                                                                <i class="fas fa-thumbs-up"></i>
-                                                                                                123
-                                                                                            </a>
-                                                                                            <a class="total-like"
-                                                                                               href="#">
-                                                                                                <i class="fas fa-thumbs-down"></i>
-                                                                                                02
-                                                                                            </a>
+
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -336,11 +330,11 @@
                                         @if($video->Category->count() > 0)
                                             @php($i = 0)
                                             @foreach($video->Category as $list)
-                                                @if($list->video)
+                                                @if($list->video && $video->id != $list->video->id)
                                                     <div class="video-card video-card-list">
                                                         <div class="video-card-image">
-                                                            <a class="play-icon" href="#"><i
-                                                                        class="fas fa-play-circle"></i></a>
+                                                            <a class="play-icon" href="#">
+                                                                <i class="fas fa-play-circle"></i></a>
                                                             <a href="{{route('video.view',$list->video->slug)}}">
                                                                 <video class="img-fluid video_list_item"
                                                                        src="{{asset($list->video->videolink)}}"

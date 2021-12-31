@@ -18,12 +18,17 @@
                     @else
                         <img class="channel-profile-img" alt="" src="{{asset('frontend/img/s2.png')}}">
                     @endif
-                    <div class="social hidden-xs">
-                        Social &nbsp;
-                        <a class="fb" href="#">Facebook</a>
-                        <a class="tw" href="#">Twitter</a>
-                        <a class="gp" href="#">Google</a>
-                    </div>
+                    @if($profile)
+                        @php $links = ['facebook_link','twitter_link','google_link'] @endphp
+                        <div class="social hidden-xs">
+                            Social:
+                            @foreach($links as $link)
+                                @if( $profile->$link)&nbsp;
+                                    <a class="fb" href="{{$profile->$link}}">{{str_replace('_link','',$link)}}</a>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </div>
 

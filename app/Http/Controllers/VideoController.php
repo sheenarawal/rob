@@ -86,19 +86,24 @@ class VideoController extends Controller
 
             $exectPath = public_path('videos/upload');
             $temPath = public_path('videos/temp');
-            $time = '00:01:00';
-            $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
-            $res = shell_exec($cmd);
+            if ($request->video_duration > 120){
+                $time = '00:02:00';
+                $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
+                $res = shell_exec($cmd);
+                Storage::disk('s3')->put('videos/'.$name, file_get_contents($exectPath.'/'.$name));
+            }else{
+                Storage::disk('s3')->put('videos/'.$name, file_get_contents($temPath.'/'.$name));
+            }
 
-            $uploadvideo = $exectPath.'/'.$name;
-            Storage::disk('s3')->put('videos/'.$name, file_get_contents($exectPath.'/'.$name));
             $file_url = Storage::disk('s3')->url('videos/'.$name);
+            //'duration'=>$request->video_duration,
             $inputData = [
                 'title'=>$request->title,
                 'desc'=>$request->description,
                 'recording_date'=>$request->recording_date,
                 'recording_location'=>$request->recording_location,
                 'video_language'=>$request->language,
+                'duration'=>$request->video_duration,
                 'is_comment_enable_status'=>$request->is_comment_enable_status,
                 'slug'=>createSlug($request->title, 'Video', 'slug'),
                 'userid'=>Auth::id(),
@@ -201,7 +206,6 @@ class VideoController extends Controller
         @unlink($mobile_image);
         @unlink($desktop_image);*/
 
-
 	}
 
 	public function category($slug)
@@ -210,7 +214,9 @@ class VideoController extends Controller
         $category = Category::firstWhere('slug',$slug);
         if ($category->videoCategory){
             foreach ($category->videoCategory as $vidoe_cat){
-                $videos[] = $vidoe_cat->video?$vidoe_cat->video:'';
+                if ($vidoe_cat->video){
+                    $videos[] = $vidoe_cat->video;
+                }
             }
         }
         return view('frontend.video.category-video',compact('videos'));
@@ -224,7 +230,9 @@ class VideoController extends Controller
         if ($category){
             if (count($category->latestVideoCat)>0){
                 foreach ($category->latestVideoCat as $videoCat){
-                    $videos[] = $videoCat->video;
+                    if ($videoCat->video){
+                        $videos[] = $videoCat->video;
+                    }
                 }
             }
         }

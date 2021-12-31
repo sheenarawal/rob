@@ -62,7 +62,7 @@ class ChallengeController extends Controller
                 'recording_date' => 'required',
                 'recording_location' => 'required',
                 'description' => 'required',
-                'video' =>  'required|mimes:mp4,mov,ogg,qt'
+                'video' =>  'required'
 
             ], [
                 "categories.required" => "Choose at least one category"
@@ -90,18 +90,22 @@ class ChallengeController extends Controller
 
                 $exectPath = public_path('videos\upload');
                 $temPath = public_path('videos\temp');
-                $time = '00:01:00';
-                $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
-                $res = shell_exec($cmd);
-
-                $uploadvideo =public_path('videos/upload/'.$name);
-                Storage::disk('s3')->put('videos/'.$name, file_get_contents($uploadvideo));
+                if ($request->video_duration > 120){
+                    $time = '00:02:00';
+                    $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
+                    $res = shell_exec($cmd);
+                    Storage::disk('s3')->put('videos/'.$name, file_get_contents($exectPath.'/'.$name));
+                }else{
+                    Storage::disk('s3')->put('videos/'.$name, file_get_contents($temPath.'/'.$name));
+                }
                 $file_url = Storage::disk('s3')->url('videos/'.$name);
                 $inputData = [
                     'title'=>$request->title,
                     'desc'=>$request->description,
                     'recording_date'=>$request->recording_date,
                     'recording_location'=>$request->recording_location,
+                    'video_language'=>$request->language,
+                    'duration'=>$request->video_duration,
                     'is_comment_enable_status'=>$request->is_comment_enable_status,
                     'slug'=>createSlug($request->title, 'Video', 'slug'),
                     'userid'=>Auth::id(),

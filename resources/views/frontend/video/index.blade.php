@@ -8,6 +8,18 @@
         <div id="content-wrapper">
             <div class="container-fluid upload-details">
                 <div class="row">
+                    <div class="col-12">
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Success!</strong> {!! session('success') !!}
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>Error!</strong> {!! session('error') !!}
+                            </div>
+                        @endif
+                    </div>
                     <div class="col-lg-12">
                         <div class="main-title">
                             <h5>Put your musical talents to the test</h5>
@@ -135,47 +147,47 @@
                     </div>
                     <div class="col-12">
                         <div class="row ">
-                            @if($videos)
+                            @if($videos && !empty($videos))
                                 @php($i = 1)
-                            @foreach($videos as $video)
-                                <div class="col-xl-3 col-sm-6 mb-3 align-items-stretch">
-                                    <div class="video-card">
-                                        <div class="video-card-image">
-                                            <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                                            <a href="{{route('video.view',$video->slug)}}">
-                                                <video id="myVid" class="img-fluid video_list_item"
-                                                       src="{{asset($video->videolink)}}" muted
-                                                       onloadedmetadata="get_duration()"></video>
-                                            </a>
-                                             <div class="time duaration_{{$i}}">00:00</div>
-                                        </div>
-                                        <div class="video-card-body">
-                                            <div class="video-title text-uppercase">
-                                                <a href="#">{{$video->title}}</a>
+                                @foreach($videos as $video)
+                                    <div class="col-xl-3 col-sm-6 mb-3 align-items-stretch">
+                                        <div class="video-card">
+                                            <div class="video-card-image">
+                                                <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
+                                                <a href="{{route('video.view',$video->slug)}}">
+                                                    <video id="myVid" class="img-fluid video_list_item"
+                                                           src="{{asset($video->videolink)}}" muted
+                                                           onloadedmetadata="get_duration()"></video>
+                                                </a>
+                                                <div class="time duaration_">{{date('i:s',$video->duration)}}</div>
                                             </div>
-                                            <div class="video-page text-success">
-                                                @if(count($video->Category)>0)
-                                                    @foreach($video->Category as $cateData)
-                                                        @if($cateData->CategoryDetail)
-                                                            <a data-placement="top"
-                                                               data-toggle="tooltip"
-                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
-                                                               data-original-title="Verified">
-                                                                {{ucfirst($cateData->CategoryDetail->title)}}
-                                                                <i class="fas fa-check-circle text-success"></i>
-                                                            </a>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                            <div class="video-view">
-                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
+                                            <div class="video-card-body">
+                                                <div class="video-title text-uppercase">
+                                                    <a href="#">{{$video->title}}</a>
+                                                </div>
+                                                <div class="video-page text-success">
+                                                    @if(count($video->Category)>0)
+                                                        @foreach($video->Category as $cateData)
+                                                            @if($cateData->CategoryDetail)
+                                                                <a data-placement="top"
+                                                                   data-toggle="tooltip"
+                                                                   href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                                   data-original-title="Verified">
+                                                                    {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                    <i class="fas fa-check-circle text-success"></i>
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                                <div class="video-view">
+                                                    <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                @php($i++)
-                            @endforeach
+                                    @php($i++)
+                                @endforeach
                             @endif
                         </div>
                     </div>
@@ -188,6 +200,11 @@
 @stop
 
 @push('frontend_css')
+    <style>
+        .video-card-image {
+            max-height: 160px;
+        }
+    </style>
 @endpush
 @push('frontend_script')
 
@@ -195,8 +212,12 @@
         $(document).ready(function (index, element) {
             let video = $(".video_list_item");
             video.each(function () {
-                $(this).mouseover(function () { this.play(); });
-                $(this).mouseout(function () { this.pause(); });
+                $(this).mouseover(function () {
+                    this.play();
+                });
+                $(this).mouseout(function () {
+                    this.pause();
+                });
             })
         })
 
@@ -233,11 +254,11 @@
         function get_duration() {
             $(".video_list_item").each(function (index, element) {
                 var value = element.duration;
-                if (value){
+                if (value) {
                     var duration_min = Math.floor(value / (3600 / 60));
                     var duration_sec = Math.floor(value % 60);
-                    var min = (duration_min < 9) ? '0'+duration_min:duration_min;
-                    var sec = (duration_sec < 9) ? '0'+duration_sec:duration_sec;
+                    var min = (duration_min < 9) ? '0' + duration_min : duration_min;
+                    var sec = (duration_sec < 9) ? '0' + duration_sec : duration_sec;
                     var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
                 }
             });

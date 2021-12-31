@@ -84,8 +84,9 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
-                                            <label for="e2">Video Screenshot</label>
+                                            <label for="e2">Video</label>
                                             <input type="file" name="video" id="video" class="form-control">
+                                            <input type="hidden" name="video_duration" value="">
                                             <span class="error-message"></span>
                                         </div>
                                     </div>
@@ -229,10 +230,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.iframe-transport.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.22.0/js/jquery.fileupload.js"></script>
     <script>
+
+        $("input[name=video]").on("change", function(e) {
+            var file = this.files[0]; // Get uploaded file
+            validateFile($(this),file) // Validate Duration
+        })
+
         function submitForm() {
             $(".form-control").removeClass('error');
             $(".error-message").text('');
             var formData = new FormData($('#uploadForm')[0]);
+
             $.ajax({
                 url: $('#uploadForm').attr('action'),
                 data: formData,
@@ -288,6 +296,17 @@
                 'width',
                 percentage + '%'
             ).text(percentage + '%');
+        }
+        function validateFile(input,file)
+        {
+            var video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                $("input[name=video_duration]").val(video.duration)
+
+            }
+            video.src = URL.createObjectURL(file);
         }
 
         {{--$("#video").change(function(e) {

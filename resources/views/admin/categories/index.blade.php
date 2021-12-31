@@ -197,8 +197,6 @@
                 title = $(this).data('cate_title')
                 parent = $(this).data('cate_parent')
                 url = "{{route('category.update')}}/"+id
-                console.log(title)
-                console.log(url)
                 $('#tag_edit_form').attr('action',url)
                 $('#edit_title').val(title)
                 $('#edit_parent option').each(function () {

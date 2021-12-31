@@ -100,7 +100,7 @@
                                            placeholder="Google Link" name="google" value="{{$profile?$profile->google_link:''}}">
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary">Sign in</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </form>
                     </div>
                 </div>
