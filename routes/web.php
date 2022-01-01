@@ -111,16 +111,21 @@ Route::group(['middleware' => ['auth','isAdmin'],'prefix'=>'admin','namespace'=>
         Route::get('delete/{id}', 'TagsController@delete')->name('tags.delete');
     });
 
-    Route::prefix('videos')->group(function () {
-        Route::get('/', 'VideoController@index')->name('videos.index');
-        Route::get('edit/{video}', 'VideoController@edit')->name('videos.edit');
-        Route::get('view/{slug}', 'VideoController@view')->name('videos.view');
-
-        //Route::any('singlevideo',[VideoController::class,'singlevideo'])->name('videos.singlevideo');
-        Route::get('create', 'VideoController@create')->name('videos.create');
-        Route::any('save', 'VideoController@save')->name('videos.save');
-        Route::post('update/{id}', 'VideoController@update')->name('videos.update');
-        Route::get('delete/{id}', 'VideoController@delete')->name('videos.delete');
+    Route::resource('videos','VideoController')
+;    Route::group(['prefix'=>'videos','as'=>'videos.'],function () {
+        Route::get('view/{video}/{type?}', 'VideoController@view')->name('view');
+        Route::get('create', 'VideoController@create')->name('create');
+        Route::post('update/{id}', 'VideoController@update')->name('update');
+        Route::get('delete/{video}', 'VideoController@delete')->name('delete');
+        Route::get('status/{video}', 'VideoController@status')->name('status');
+    });
+;    Route::group(['prefix'=>'comments','as'=>'comments.'],function () {
+        Route::get('list', [\App\Http\Controllers\Admin\CommentController::class,'index'])->name('index');
+        Route::get('table-data/{video?}', [\App\Http\Controllers\Admin\CommentController::class,'tableData'])->name('table.data');
+    });
+;    Route::group(['prefix'=>'challenge_videos','as'=>'challenge_videos.'],function () {
+        Route::get('list', [\App\Http\Controllers\Admin\ChallengeVideoController::class,'index'])->name('index');
+        Route::get('table-data/{video?}', [\App\Http\Controllers\Admin\ChallengeVideoController::class,'tableData'])->name('table.data');
     });
 
 

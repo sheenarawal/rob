@@ -9,10 +9,10 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-8">
-                                <h3 class="mb-0">Videos</h3>
+                                <h3 class="mb-0">Comments</h3>
                             </div>
-                            <div class="col-4 text-right">
-                                <a href="{{route('videos.create')}}" class="btn btn-sm btn-primary">Create</a>
+                            <div class="col-4 text-right d-none">
+                                <a href="#" class="btn btn-sm btn-primary">Create</a>
                             </div>
                         </div>
                     </div>
@@ -31,10 +31,8 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Publishing User</th>
                                     <th scope="col">Video</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col">Comment</th>
                                     <th scope="col">Create</th>
-                                    <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +69,7 @@
             $('#video_table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax:"{{route('videos.index')}}",
+                ajax:"{{route('comments.table.data')}}",
                 language: {
                     paginate: {
                         next: '<i class="fas fa-arrow-right"></i>',
@@ -80,17 +78,10 @@
                 },
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'userid', name: 'userid'},
-                    {data: 'videolink', name: 'videolink'},
-                    {data: 'title', name: 'title'},
-                    {data: 'status', name: 'status'},
+                    {data: 'user_id', name: 'userid'},
+                    {data: 'video_id', name: 'video_id'},
+                    {data: 'comment', name: 'comment'},
                     {data: 'created_at', name: 'created_at'},
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true,
-                        searchable: true
-                    },
                 ]
             });
         } );

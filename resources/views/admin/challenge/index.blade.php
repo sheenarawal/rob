@@ -9,10 +9,10 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col-8">
-                                <h3 class="mb-0">Videos</h3>
+                                <h3 class="mb-0">Challenged Videos</h3>
                             </div>
-                            <div class="col-4 text-right">
-                                <a href="{{route('videos.create')}}" class="btn btn-sm btn-primary">Create</a>
+                            <div class="col-4 text-right d-none">
+                                <a href="#" class="btn btn-sm btn-primary">Create</a>
                             </div>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
             $('#video_table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax:"{{route('videos.index')}}",
+                ajax:"{{route('challenge_videos.table.data')}}",
                 language: {
                     paginate: {
                         next: '<i class="fas fa-arrow-right"></i>',

@@ -94,20 +94,32 @@
                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('category.index') }}">
-                    <i class="ni ni-bullet-list-67 text-blue"></i> {{ __('Categories') }}
+                    <i class="ni ni-single-copy-04 text-blue"></i> {{ __('Categories') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('tags.index') }}">
-                    <i class="ni ni-bullet-list-67 text-blue"></i> {{ __('Tags') }}
+                    <i class="ni ni-box-2 text-blue"></i> {{ __('Tags') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('videos.index') }}">
-                    <i class="ni ni-bullet-list-67 text-blue"></i> {{ __('Videos') }}
+                    <i class="ni ni-image text-blue"></i> {{ __('Videos') }}
                     </a>
                 </li>
                 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('challenge_videos.index') }}">
+                        <i class="ni ni-diamond text-blue"></i> {{ __('Challenge Video') }}
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('comments.index') }}">
+                        <i class="ni ni-chat-round text-blue"></i> {{ __('Comments') }}
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('site_settings') }}">
                         <i class="ni ni-settings text-blue"></i> {{ __('Site Settings') }}
@@ -115,7 +127,7 @@
                 </li>
 
                 
-                <li class="nav-item">
+                <li class="nav-item d-none">
                     <a class="nav-link" href="{{ route('pagecontent.index') }}">
                         <i class="ni ni-books text-blue"></i> {{ __('Page Content') }}
                     </a>

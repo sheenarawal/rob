@@ -56,7 +56,7 @@
                     </div>
                     <hr>
                 </form>--}}
-                <form action="{{route('challenge.video.store',$video->id)}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
+                <form action="{{route('challenge.video.store',base64_encode($video->slug))}}" id="uploadForm" method="post" onsubmit="return false"  enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="col-lg-12">
