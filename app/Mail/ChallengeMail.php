@@ -32,7 +32,7 @@ class ChallengeMail extends Mailable
     public function build()
     {
         return $this->subject($this->data['subject'])
-            ->from('testchallenge@gmail.com')
+            ->from(env('MAIL_FROM_ADDRESS'))
             ->view('emails.challenge');
     }
 }

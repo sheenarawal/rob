@@ -21,7 +21,7 @@ class VideoController extends Controller
 	public function index()
 	{
 	    $categories = Category::orderBy('id','desc')->get();
-        $videos =  Video::all();
+        $videos =  Video::orderBy('id','desc')->paginate(20);
         return view('frontend.video.index', compact('videos','categories'));
 	}
 	function show($slug)

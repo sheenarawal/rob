@@ -33,7 +33,7 @@ class commonMail extends Mailable
     {
 
         return $this->subject($this->details['subject'])
-            ->from('developertestnew@gmail.com')
-            ->view('emails.' . $this->details['view']);
+            ->from(env('MAIL_FROM_ADDRESS'))
+            ->view('emails.welcome_email');
     }
 }

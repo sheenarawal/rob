@@ -190,6 +190,9 @@
                                 @endforeach
                             @endif
                         </div>
+                        <div class="row justify-content-center mt-md-4">
+                            {{ $videos->links('vendor.pagination.account_pager') }}
+                        </div>
                     </div>
                 </div>
             </div>

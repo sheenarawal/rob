@@ -8,6 +8,7 @@ use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
@@ -85,9 +86,9 @@ class AuthController extends Controller
                 'password' => $data['password'],
                 'name' => $data['firstname'],
                 'view' => 'welcome_email',
-                'subject' => 'Welome Pop Rival'
+                'subject' => 'Welcome to Pop Rival'
             );
-            //\Mail::to($data['regemail'])->send(new \App\Mail\commonMail($details));
+            Mail::to($request->email)->send(new \App\Mail\commonMail($details));
 
             return Redirect::route('login')->with('success', 'Registered Successfully!!!');
         }
