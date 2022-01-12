@@ -191,7 +191,9 @@
                             @endif
                         </div>
                         <div class="row justify-content-center mt-md-4">
+                            @if($videos)
                             {{ $videos->links('vendor.pagination.account_pager') }}
+                            @endif
                         </div>
                     </div>
                 </div>

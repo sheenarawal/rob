@@ -36,7 +36,7 @@ class ChallengeController extends Controller
             'title'=>$video->title,
             'url'=>route('video.view',$video->slug),
         ];
-        Mail::to($video->user->email)->send(new ChallengeMail($data));
+        //Mail::to($video->user->email)->send(new ChallengeMail($data));
         return Redirect::back()->with('success','Challenged Successfully');
     }
 

@@ -21,7 +21,7 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $user = User::findOrFail(Auth::id());
         $profile = Profile::firstWhere('user_id',Auth::id());
         if ($file = $request->file('profile_photo')){
             $type = $file->getClientOriginalExtension();
@@ -46,6 +46,7 @@ class ProfileController extends Controller
         }else{
             $cover_photo = $profile?$profile->cover_photo:'';
         }
+        $user->update(['first_name'=>$request->first_name,'last_name'=>$request->last_name]);
         $data=[
             'user_id'=>Auth::id(),
             'address'=>$request->address,

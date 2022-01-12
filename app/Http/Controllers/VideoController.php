@@ -45,7 +45,6 @@ class VideoController extends Controller
 	}
 	function create()
 	{
-
 		$categories = Category::all();
 		$languages = getLanguages();
 		return view('frontend.uploadvideo', compact(['categories', 'languages']));
@@ -146,7 +145,6 @@ class VideoController extends Controller
             "message" => 'Video file not found'
         );
         return response()->json($response);
-
         /*$ext = explode(".", $name);
         $desktopfile_name = 'desktop_' . $ext[0];
         $mobilefile_name = 'mobile_' . $ext[0];
@@ -205,7 +203,6 @@ class VideoController extends Controller
         @unlink($mobile);
         @unlink($mobile_image);
         @unlink($desktop_image);*/
-
 	}
 
 	public function category($slug)
@@ -230,18 +227,17 @@ class VideoController extends Controller
         if ($category){
             if (count($category->latestVideoCat)>0){
                 foreach ($category->latestVideoCat as $videoCat){
-                    if ($videoCat->video){
-                        $videos[] = $videoCat->video;
-                    }
+                    $v_ids[] = $videoCat->video_id;
                 }
+                $videos = Video::whereIn('id',$v_ids)->paginate(20);
             }
         }
         $slug = in_array($filter,['oldest','newest']);
         if ($filter == 'oldest' ){
-            $videos = Video::all();
+            $videos = Video::paginate(20);
         }
         if ($filter == 'newest' ){
-            $videos = Video::orderBy('id','desc')->get();
+            $videos = Video::orderBy('id','desc')->paginate(20);
         }
         return view('frontend.video.index',compact('videos','categories','filter'));
     }
