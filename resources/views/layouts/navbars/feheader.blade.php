@@ -33,9 +33,10 @@
         @endif
         <li class="nav-item dropdown no-arrow osahan-right-navbar-user">
             <a class="nav-link dropdown-toggle user-dropdown-link" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img alt="Avatar" src="{{ profile_image()}}">
-                @if(Auth::check())
-                    {{Auth::user()->first_name}} {{Auth::user()->last_name}}
+
+                @if(\Illuminate\Support\Facades\Auth::check())
+                    <img alt="Avatar" src="{{ profile_image(\Illuminate\Support\Facades\Auth::id())}}">
+                    {{\Illuminate\Support\Facades\Auth::user()->first_name}} {{\Illuminate\Support\Facades\Auth::user()->last_name}}
                 @endif
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">

@@ -36,6 +36,11 @@ Route::get('/updateapp', function () {
 Route::group(['middleware'=>'guest'],function (){
     Route::match(['get','post'],'/login', [AuthController::class,'login'])->name('login');
     Route::match(['get','post'],'/signup', [AuthController::class,'register'])->name('signup');
+
+    Route::group(['prefix'=>'auth'],function (){
+        Route::match(['get','post'],'google', [SocialLoginController::class,'redirect_google'])->name('redirect_google');
+        Route::match(['get','post'],'google/callback', [SocialLoginController::class,'google_callback'])->name('google_callback');
+    });
 });
 Route::group(['middleware'=>'auth'],function (){
     Route::match(['get','post'],'logout', [AuthController::class,'logout'])->name('logout');
@@ -57,6 +62,7 @@ Route::group(['middleware'=>'auth'],function (){
     });
     Route::group(['prefix'=>'account','as'=>'account.'],function (){
         Route::get('/page/{tag?}', 'HomeController@index')->name('index');
+        Route::get('/view/token={id?}/{name?}', 'HomeController@show')->name('show');
         Route::get('video', 'HomeController@video')->name('video');
         Route::get('edit', [ProfileController::class,'index'])->name('profile');
         Route::post('update', [ProfileController::class,'update'])->name('update');

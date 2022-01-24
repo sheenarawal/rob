@@ -70,6 +70,10 @@
                         </div>
                     </form>
                     <div class="text-center mt-5">
+                        <a class="btn btn-danger" href="{{route('redirect_google')}}">Google</a>
+                        <a class="btn btn-primary" href="{{route('signup')}}">Facebook</a>
+                    </div>
+                    <div class="text-center mt-3">
                         <p class="light-gray">Don’t have an account? <a href="{{route('signup')}}">Sign Up</a></p>
                     </div>
                 </div>

@@ -22,17 +22,9 @@
                                     </video>
                                 </div>
                             </div>
-                            <div class="single-video-title box mb-3">
+                            <div class="single-video-title box user-dropdown-link mb-3">
                                 <h2><a href="#">{{$video->title}}</a></h2>
-                                <div class="wapper">
-                                    <button class="like__btn">
-                                        <span id="icon"> <i class="far fa-thumbs-up"></i></span>
-                                        <span id="count">{{$video->likes->count()}}</span>
-                                    </button>
-                                    <button class="dislike__btn">
-                                        <span id="icon"> <i class="far fa-thumbs-down"></i></span>
-                                        <span id="count">{{$video->dislikes->count()}}</span>
-                                    </button>
+                                <div class="float-right pt-3">
                                     @guest
                                         <h6>Please Sign in to Challenge - <a href="{{route('login')}}">Log
                                                 in</a> or <a href="{{route('signup')}}">Register</a></h6>
@@ -41,14 +33,26 @@
                                             @if($challenge)
                                                 @php $status = \App\Models\Challenge::status($challenge->status) @endphp
                                                 @if($challenge->status == 2)
+                                                    @if(\Carbon\Carbon::parse($challenge->updated_at)->diffInDays(\Carbon\Carbon::today()) < 7)
+                                                        <p class="d-flex mb-0">
+                                                            <span class="pt-2 mr-3 font-weight-bold">
+                                                                {{7 - \Carbon\Carbon::parse($challenge->updated_at)->diffInDays(\Carbon\Carbon::today())}}
+                                                            days Left</span>
+                                                            <a class="btn btn-outline-primary btn-sm"
+                                                               href="{{route('challenge.video.store',base64_encode($video->slug))}}">
+                                                                <i class="fas fa-fw fa-cloud-upload-alt"></i>
+                                                                <span>Upload Video</span>
+                                                            </a>
 
-                                                    <a class="nav-link"
-                                                       href="{{route('challenge.video.store',base64_encode($video->slug))}}">
-                                                        <i class="fas fa-fw fa-cloud-upload-alt"></i>
-                                                        <span>Upload Video</span>
-                                                    </a>
+                                                        </p>
+                                                    @else
+                                                        <p>Your Time is over to upload challenge video</p>
+                                                    @endif
                                                 @else
-                                                    <span class="h6">Wait for challenge accept ! Your challenge is bing {{$status}}</span>
+                                                    <p><b>
+                                                            {{$challenge->status == 1?'Wait for challenge accept ! Your challenge is bing '.$status:'Your challenge request is '.$status}}
+                                                        </b>
+                                                    </p>
                                                 @endif
                                             @else
                                                 <a href="{{route('challenge.create',$video->slug)}}" id="challange"
@@ -56,13 +60,116 @@
                                             @endif
                                         @endif
                                     @endguest
-                                    <p class="text-right"><i class="fas fa-map-marker-alt text-warning"> </i>
-                                        <b>{{$video->recording_location}}</b> Published
-                                        on {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}</p>
+
+                                </div>
+                                <img class="img-fluid float-left mt-2 mr-2" src="{{profile_image($video->user['id'])}}"
+                                     alt="">
+                                <p class="mb-0">
+                                    <a class="text-capitalize"
+                                       href="{{route('account.show',[base64_encode($video->user['id']),$video->user['display_name']])}}">
+                                        <strong>{{$video->user['display_name']}}</strong>
+                                    </a>
+                                    <span title="" data-placement="top" data-toggle="tooltip"
+                                          data-original-title="Verified"><i
+                                                class="fas fa-check-circle text-success"></i></span></p>
+                                <small>Published
+                                    on {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans()}}</small>
+                                <div class="wapper mt-3">
+                                    <button class="like__btn">
+                                        <span id="icon"
+                                              class="{{video_like($user_Details->id,$video->id)?'active':''}}">
+                                            <i class="far fa-thumbs-up"></i></span>
+                                        <span id="count">{{$video->likes->count()}}</span>
+                                    </button>
+                                    <button class="dislike__btn ml-2">
+                                        <span id="icon"
+                                              class="{{video_dislike($user_Details->id,$video->id)?'active':''}}">
+                                            <i class="far fa-thumbs-down"></i></span>
+                                        <span id="count">{{$video->dislikes->count()}}</span>
+                                    </button>
+
+                                    <p class="float-right">
+                                        <i class="fas fa-map-marker-alt text-warning"> </i>
+                                        <b>{{$video->recording_location}}</b>
+                                    </p>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!--<div class="adblock">
+                                        <div class="img">
+                                            Google AdSense<br>
+                                            336 x 280
+                                        </div>
+                                    </div>-->
+                                    <div class="main-title">
+                                        <!--<div class="btn-group float-right right-action">
+                                                <a href="#" class="right-action-link text-gray" data-toggle="dropdown"
+                                                   aria-haspopup="true" aria-expanded="false">
+                                                    Sort by <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" href="#"><i class="fas fa-fw fa-star"></i>
+                                                        &nbsp; Top Rated</a>
+                                                    <a class="dropdown-item" href="#"><i
+                                                                class="fas fa-fw fa-signal"></i> &nbsp; Viewed</a>
+                                                    <a class="dropdown-item" href="#"><i
+                                                                class="fas fa-fw fa-times-circle"></i> &nbsp; Close</a>
+                                                </div>
+                                            </div> -->
+                                        <h6>Related Videos</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if($video->challengeVideos->count() > 0)
+                                    @php($i = 0)
+                                    @foreach($video->challengeVideos as $list)
+                                        @if($list->challengeVideo)
+                                            <div class="col-xl-3 col-sm-6 mb-3 align-items-stretch">
+                                                <div class="video-card">
+                                                    <div class="video-card-image">
+                                                        <a class="play-icon" href="#"><i
+                                                                    class="fas fa-play-circle"></i></a>
+                                                        <a href="{{route('video.view',$list->challengeVideo->slug)}}">
+                                                            <video class="img-fluid video_list_item" style="max-height: 150px"
+                                                                   src="{{asset($list->challengeVideo->videolink)}}"
+                                                                   onloadedmetadata="get_duration()"></video>
+                                                        </a>
+                                                        <div class="time duaration_{{$i}}">0:00</div>
+                                                    </div>
+                                                    <div class="video-card-body">
+                                                        <div class="video-title">
+                                                            <a href="{{route('video.view',$list->challengeVideo->slug)}}">{{$list->challengeVideo->title}}</a>
+                                                        </div>
+                                                        <div class="video-page text-success">
+                                                            @if(count($video->Category)>0)
+                                                                @foreach($video->Category as $cateData)
+                                                                    @if($cateData->CategoryDetail)
+                                                                        <a data-placement="top"
+                                                                           data-toggle="tooltip"
+                                                                           href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
+                                                                           data-original-title="Verified">
+                                                                            {{ucfirst($cateData->CategoryDetail->title)}}
+                                                                            <i class="fas fa-check-circle text-success"></i>
+                                                                        </a>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endif
+                                                        </div>
+                                                        <div class="video-view">
+                                                            <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @php ($i++)
+                                    @endforeach
+                                @endif
+                            </div>
                             <div class="single-video-info-content box mb-3 text-dark">
-                                <p><b>{{$video->user['display_name']}}</b></p>
                                 <p>{{$video->desc}}</p>
                                 <p>Language : {{$video->video_language}} </p>
                                 <p class="tags mb-0">
@@ -119,7 +226,8 @@
                                                     <div class="reviews-members pt-0">
                                                         <div class="media">
                                                             <a href="#">
-                                                                <img class="mr-3" src="{{profile_image()}}"
+                                                                <img class="mr-3"
+                                                                     src="{{profile_image(\Illuminate\Support\Facades\Auth::id())}}"
                                                                      alt="Generic placeholder image"></a>
                                                             <div class="media-body">
                                                                 <form action="{{route('video.comment.store',$video->id)}}"
@@ -153,11 +261,13 @@
                                                         <div class="media">
                                                             <a href="#">
                                                                 @if($comment->user && $comment->user->profileData)
-                                                                <img class="mr-3" src="{{$comment->user->profileData->profile_photo}}"
-                                                                             alt="Generic placeholder image">
+                                                                    <img class="mr-3"
+                                                                         src="{{$comment->user->profileData->profile_photo}}"
+                                                                         alt="Generic placeholder image">
                                                                 @else
-                                                                <img class="mr-3" src="{{asset('frontend/img/s2.png')}}"
-                                                                             alt="Generic placeholder image">
+                                                                    <img class="mr-3"
+                                                                         src="{{asset('frontend/img/s2.png')}}"
+                                                                         alt="Generic placeholder image">
                                                                 @endif
                                                             </a>
                                                             <div class="media-body">
@@ -288,12 +398,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endguest
+                                    @endguest
                                     <!-- End commentform Area -->
-                                        @else
-                                            <h6 class="text-center">Comment is Disabled !</h6>
                                     </section>
                                     <!-- End comment-sec Area -->
+                                @else
+                                    <h6 class="text-center">Comment is Disabled !</h6>
                                 @endif
 
                             </div>
@@ -379,49 +489,6 @@
                                         </div>
                                         <hr>
 
-                                        @if($video->challengeVideos->count() > 0)
-                                            @php($i = 0)
-                                            @foreach($video->challengeVideos as $list)
-                                                @if($list->challengeVideo)
-                                                    <div class="video-card video-card-list">
-                                                        <div class="video-card-image">
-                                                            <a class="play-icon" href="#"><i
-                                                                        class="fas fa-play-circle"></i></a>
-                                                            <a href="{{route('video.view',$list->challengeVideo->slug)}}">
-                                                                <video class="img-fluid video_list_item"
-                                                                       src="{{asset($list->challengeVideo->videolink)}}"
-                                                                       onloadedmetadata="get_duration()"></video>
-                                                            </a>
-                                                            <div class="time duaration_{{$i}}">0:00</div>
-                                                        </div>
-                                                        <div class="video-card-body">
-                                                            <div class="video-title">
-                                                                <a href="{{route('video.view',$list->challengeVideo->slug)}}">{{$list->challengeVideo->title}}</a>
-                                                            </div>
-                                                            <div class="video-page text-success">
-                                                                @if(count($video->Category)>0)
-                                                                    @foreach($video->Category as $cateData)
-                                                                        @if($cateData->CategoryDetail)
-                                                                            <a data-placement="top"
-                                                                               data-toggle="tooltip"
-                                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
-                                                                               data-original-title="Verified">
-                                                                                {{ucfirst($cateData->CategoryDetail->title)}}
-                                                                                <i class="fas fa-check-circle text-success"></i>
-                                                                            </a>
-                                                                        @endif
-                                                                    @endforeach
-                                                                @endif
-                                                            </div>
-                                                            <div class="video-view">
-                                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                                @php ($i++)
-                                            @endforeach
-                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -494,13 +561,17 @@
         });
         $(document).on('click', '.like__btn', function (e) {
             var data = runAjax('like')
-            $('.like__btn #count').text(data.count);
+            $('.like__btn #count').text(data.like_count);
+            $('.dislike__btn #count').text(data.dislike_count);
             $('.like__btn #icon').addClass(data.class);
+            $('.dislike__btn #icon').removeClass('active');
         });
         $(document).on('click', '.dislike__btn', function (e) {
             var data = runAjax('dislike')
-            $('.dislike__btn #count').text(data.count);
+            $('.dislike__btn #count').text(data.dislike_count);
+            $('.like__btn #count').text(data.like_count);
             $('.dislike__btn #icon').addClass(data.class);
+            $('.like__btn #icon').removeClass('active');
         });
 
         function runAjax(type) {

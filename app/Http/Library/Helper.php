@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\VideoDislike;
+use App\Models\VideoLike;
+
 /**
  * Fetch General Settings set for whole site
  */
@@ -351,9 +354,35 @@ function cate_nav()
 
 }
 
-function profile_image()
+function video_like($user_id,$video_id)
 {
-    $profile = \App\Models\Profile::firstWhere('user_id',\Illuminate\Support\Facades\Auth::id());
+    $request_data = [
+        'video_id'=>$video_id,
+        'user_id'=>$user_id
+    ];
+    $like = VideoLike::where($request_data)->first();
+    if ($like){
+        return true;
+    }
+    return false;
+
+}
+function video_dislike($user_id,$video_id)
+{
+    $request_data = [
+        'video_id'=>$video_id,
+        'user_id'=>$user_id
+    ];
+    $dislike = VideoDislike::where($request_data)->first();
+    if ($dislike){
+        return true;
+    }
+    return false;
+}
+
+function profile_image($id)
+{
+    $profile = \App\Models\Profile::firstWhere('user_id',$id);
     $data ='frontend/img/user.png';
     if ($profile && $profile->profile_photo) {$data = $profile->profile_photo;}
     return  asset($data);

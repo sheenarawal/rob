@@ -277,10 +277,7 @@
             var token = $('input[name=_token]').val()
             var file = e.target.files[0];
             // Validate video file type
-            if (["video/mp4"].indexOf(file.type) === -1) {
-                alert("Only 'MP4' video format allowed.");
-                return;
-            } else {
+
                 $('.video-preview-outer').removeClass('d-none')
                 $('.video-outer').addClass('d-none')
                 document.getElementById('img_preview').src = window.URL.createObjectURL(this.files[0])
@@ -319,7 +316,7 @@
                     $("#result").html(data);
                  }
               });*/
-            }
+
 
         });
         $('#e7').amsifySuggestags({

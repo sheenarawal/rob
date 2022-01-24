@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Challenge;
+use App\Models\User;
 use App\Models\VideoCategory;
 use App\Models\VideoTag;
 use App\Models\Video;
@@ -29,13 +30,14 @@ class VideoController extends Controller
 		$video = Video::where(['slug' => $slug])->first();
 		if (!$video){ return abort('404');}
 		$challenge = Challenge::where(['video_id'=>$video->id,'user_id'=>Auth::id()])->first();
+		$user_Details  = User::where('id',Auth::id())->first();
 		//dd($challenge);
         $video_list = Video::where('slug','!=',$slug)->get();
 		if (!$video) {
 
 			abort(404);
 		}
-		return view('frontend.video.show', compact('video','video_list','challenge'));
+		return view('frontend.video.show', compact('video','video_list','challenge','user_Details'));
 	}
 	function search()
 	{
@@ -145,6 +147,7 @@ class VideoController extends Controller
             "message" => 'Video file not found'
         );
         return response()->json($response);
+
         /*$ext = explode(".", $name);
         $desktopfile_name = 'desktop_' . $ext[0];
         $mobilefile_name = 'mobile_' . $ext[0];

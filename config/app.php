@@ -180,7 +180,7 @@ return [
 
         /* FFMpeg */
         ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
-
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
     ],
 
@@ -238,7 +238,8 @@ return [
 
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         /* FFMpeg */
-        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class
+        'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

@@ -19,12 +19,24 @@ class HomeController extends Controller
     public function index()
     {
         $this->redirectRoute();
-        $videos = Video::where(['userid' => Auth::id()])->paginate(12);
+        $user = User::findOrFail(Auth::id());
+        $videos = Video::where(['userid' => Auth::id()])->orderBy('id','desc')->paginate(12);
         $videos_id = Video::where(['userid' => Auth::id()])->select('id')->get()->toArray();
-        $challenges = Challenge::whereIn('video_id',$videos_id)->get();
+        $challenges = Challenge::whereIn('video_id',$videos_id)->orderBy('id','desc')->paginate(5);
         $profile = Profile::firstWhere('user_id',Auth::id());
-        return view('frontend.profile.view', compact('videos','challenges','profile'));
+        return view('frontend.profile.view', compact('videos','challenges','profile','user'));
 
+    }
+    public function show($id,$name)
+    {
+
+        $id = base64_decode($id);
+        $user = User::findOrFail($id);
+        $videos = Video::where(['userid' => $id])->orderBy('id','desc')->paginate(12);
+        $videos_id = Video::where(['userid' => $id])->select('id')->get()->toArray();
+        $challenges = Challenge::whereIn('video_id',$videos_id)->orderBy('id','desc')->paginate(5);
+        $profile = Profile::firstWhere('user_id',$id);
+        return view('frontend.profile.view', compact('videos','challenges','profile','user'));
     }
 
     public function redirectRoute()

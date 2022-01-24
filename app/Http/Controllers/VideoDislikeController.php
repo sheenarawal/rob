@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VideoDislike;
+use App\Models\VideoLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,24 +38,28 @@ class VideoDislikeController extends Controller
     public function store(Request $request)
     {
         $id = $request->id;
+        $request_data = [
+            'video_id'=>$request->id,
+            'user_id'=>Auth::id()
+        ];
         $dislike = VideoDislike::withTrashed()->where(['video_id'=>$id,'user_id'=>Auth::id()])->first();
         if (!$dislike){
-            VideoDislike::create([
-                'video_id'=>$request->id,
-                'user_id'=>Auth::id()
-            ]);
+            VideoDislike::create($request_data);
+            VideoLike::where($request_data)->delete();
             $data = ['status'=>true,'message'=>'you dislike a video','class'=>'active'];
         }else{
             if ($dislike->deleted_at){
                 $dislike->restore();
+                VideoLike::where($request_data)->delete();
                 $data = ['status'=>true,'message'=>'you dislike a video','class'=>'active'];
             }else{
                 $data = ['status'=>true,'message'=>'you un-dislike a video','class'=>''];
                 $dislike->delete();
             }
         }
-        $likes = VideoDislike::where(['video_id'=>$id])->get();
-        $value = array_merge($data,['count'=>$likes->count()]);
+        $likes = VideoLike::where(['video_id'=>$id])->get();
+        $dislikes = VideoDislike::where(['video_id'=>$id])->get();
+        $value = array_merge($data,['like_count'=>$likes->count(),'dislike_count'=>$dislikes->count()]);
         return json_encode($value);
     }
 

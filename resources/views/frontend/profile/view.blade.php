@@ -34,7 +34,7 @@
 
             <div class="single-channel-nav">
                 <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="channel-brand" href="#">{{ ucfirst(\Illuminate\Support\Facades\Auth::user()->display_name)}}
+                    <a class="channel-brand" href="#">{{ ucfirst($user->display_name)}}
                         <span title="" data-placement="top" data-toggle="tooltip"
                               data-original-title="Verified"><i class="fas fa-check-circle text-success"></i>
                         </span>
@@ -55,10 +55,12 @@
                                 <a class="nav-link" id="playlist-tab" data-toggle="tab" href="#playlist" role="tab"
                                    aria-controls="playlist" aria-selected="true">Playlist</a>
                             </li>
+                            @if($user->id == \Illuminate\Support\Facades\Auth::id())
                             <li class="nav-item">
                                 <a class="nav-link" id="challenges-tab" data-toggle="tab" href="#challenges" role="tab"
                                    aria-controls="challenges" aria-selected="true">Challenges</a>
                             </li>
+                            @endif
                             <li class="nav-item d-none">
                                 <a class="nav-link" id="discussion-tab" data-toggle="tab" href="#discussion" role="tab"
                                    aria-controls="discussion" aria-selected="true">Discussion</a>
@@ -162,6 +164,7 @@
 
                         </div>
                     </div>
+                    @if($user->id == \Illuminate\Support\Facades\Auth::id())
                     <div class="col tab-pane fade" id="challenges" role="tabpanel" aria-labelledby="challenges-tab">
 
                         <div class="row">
@@ -185,7 +188,7 @@
                                             <td>
                                                 @if($challenge->videoDetail)
                                                     <video class="" src="{{asset($challenge->videoDetail->videolink)}}"
-                                                           onloadedmetadata="get_duration()" style="max-width: 260px"></video>
+                                                           onloadedmetadata="get_duration()" style="width: 260px;max-height: 260px"></video>
                                                 @endif
                                             </td>
                                             <td>
@@ -193,10 +196,10 @@
                                                     <span class="badge badge-warning">Pending</span>
                                                 @endif
                                                 @if($challenge->status == 2)
-                                                    <span class="badge badge-warning">Accepted</span>
+                                                    <span class="badge badge-success">Accepted</span>
                                                 @endif
                                                 @if($challenge->status == 3)
-                                                    <span class="badge badge-warning">Reject</span>
+                                                    <span class="badge badge-danger">Reject</span>
                                                 @endif
 
                                             </td>
@@ -211,7 +214,16 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-9 mx-auto">
+                                <hr>
+                                @if($challenges)
+                                    {{ $challenges->links('vendor.pagination.account_pager') }}
+                                @endif
+                            </div>
+                        </div>
                     </div>
+                    @endif
                     <div class="col tab-pane fade" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
 
                         <div class="row">discution

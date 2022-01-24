@@ -88,8 +88,8 @@ class ChallengeController extends Controller
                 $temp = 'videos/temp/' . $name;
                 Storage::disk('public')->put($temp, file_get_contents($file));
 
-                $exectPath = public_path('videos\upload');
-                $temPath = public_path('videos\temp');
+                $exectPath = public_path('videos/upload');
+                $temPath = public_path('videos/temp');
                 if ($request->video_duration > 120){
                     $time = '00:02:00';
                     $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
