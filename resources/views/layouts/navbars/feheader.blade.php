@@ -3,7 +3,8 @@
     <button class="btn btn-link btn-sm text-secondary order-1 order-sm-0" id="sidebarToggle">
         <i class="fas fa-bars"></i>
     </button> &nbsp;&nbsp;
-    <a class="navbar-brand mr-1" href="{{route('index')}}"><img class="img-fluid" alt="" src="{{ asset('frontend') }}/img/logo.png"></a>
+    <a class="navbar-brand mr-1" href="{{route('index')}}">
+        <img class="img-fluid" alt="" src="{{ site_logo() }}" style="max-width: 120px"></a>
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-5 my-2 my-md-0 osahan-navbar-search" type="get" action="{{url('/search')}}">
         <div class="input-group">

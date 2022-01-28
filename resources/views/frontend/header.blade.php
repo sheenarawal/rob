@@ -18,6 +18,8 @@
       <!-- Owl Carousel -->
       <link rel="stylesheet" href="{{ asset('frontend') }}/vendor//owl-carousel/owl.carousel.css">
       <link rel="stylesheet" href="{{ asset('frontend') }}/vendor//owl-carousel/owl.theme.css">
+
+      <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=61ef85696346030019493bd2&product=inline-share-buttons" async="async"></script>
       @stack('frontend_css')
    </head>
 <body id="page-top" class="{{in_array(\Route::currentRouteName(),['video.view'])?'sidebar-toggled':''}}">

@@ -6,7 +6,8 @@
         </button>
         <!-- Brand -->
         <a class="navbar-brand pt-0" href="{{ route('dashboard') }}">
-            <h1>PopRival</h1>
+            <img src="{{site_logo()}}" alt="/logo">
+            <!-- <h1>PopRival</h1>-->
         </a>
         <!-- User -->
         <ul class="nav align-items-center d-md-none">

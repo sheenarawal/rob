@@ -168,7 +168,7 @@
                                 </div>
                             </div>
                             <div class="osahan-area text-center mt-3">
-                                <input type="submit" class="btn btn-outline-primary" value="Save Changes"
+                                <input type="submit" class="btn btn-outline-primary submit_video" value="Save Changes"
                                        onclick="submitForm()">
                             </div>
                             <hr>
@@ -213,6 +213,18 @@
         $("input[name=video]").on("change", function(e) {
             var file = this.files[0]; // Get uploaded file
             validateFile($(this),file) // Validate Duration
+            console.log(this.files[0].size)
+            const file_size = Math.round((this.files[0].size / 1024));
+            // The size of the file.
+            if (file_size >= 102400) {
+                alert("Video File too Big, please select a file less than 100MB");
+                $('.submit_video').addClass('d-none')
+            } else if (file_size < 2048) {
+                alert("Vidoe File too small, please select a file greater than 2MB");
+                $('.submit_video').addClass('d-none')
+            }else{
+                $('.submit_video').removeClass('d-none')
+            }
         })
         function validateFile(input,file)
         {
@@ -273,7 +285,7 @@
             })
 
         }
-        $("#video").change(function(e) {
+       /* $("#video").change(function(e) {
             var token = $('input[name=_token]').val()
             var file = e.target.files[0];
             // Validate video file type
@@ -308,17 +320,17 @@
                     ).text(percentage + '%');
                 }
 
-                /*$.ajax({
+                /!*$.ajax({
                    type:"post",
                    url:"{{route('video.store')}}",
                  data:{_token:token,video:$(this).val()},
                  success:function(data){
                     $("#result").html(data);
                  }
-              });*/
+              });*!/
 
 
-        });
+        });*/
         $('#e7').amsifySuggestags({
             trimValue: true,
             dashspaces: true,

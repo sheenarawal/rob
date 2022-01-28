@@ -26,9 +26,9 @@
             <div class="col-md-5 p-5 bg-white full-height">
                 <div class="login-main-left">
                     <div class="text-center mb-5 login-main-left-header pt-4">
-                        <img src="{{ asset('frontend/img/favicon.png') }}" class="img-fluid" alt="LOGO">
-                        <h5 class="mt-3 mb-3">Welcome to PopRival</h5>
-                        <p>It is a long established fact that a reader <br> will be distracted by the readable.</p>
+                        <img src="{{ site_logo() }}" class="img-fluid" alt="LOGO">
+                        @php($setting = getSiteSetting())
+                        <h5 class="mt-3 mb-3">{!! isset($setting['login_tag_line'])?$setting['login_tag_line']:'Put your musical talents to the test' !!}</h5>
                     </div>
                     @if (session()->has('success'))
                         <div class="notification">
@@ -69,16 +69,16 @@
                             </div>
                         </div>
                     </form>
-                    <div class="text-center mt-5">
-                        <a class="btn btn-danger" href="{{route('redirect_google')}}">Google</a>
-                        <a class="btn btn-primary" href="{{route('signup')}}">Facebook</a>
+                    <div class="text-center mt-5 d-none">
+                        <a class="btn btn-danger" href="">Google</a>
+                        <a class="btn btn-primary" href="">Facebook</a>
                     </div>
                     <div class="text-center mt-3">
                         <p class="light-gray">Don’t have an account? <a href="{{route('signup')}}">Sign Up</a></p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-7 d-md-block d-none">
                 <div class="login-main-right bg-white p-5 mt-5 mb-5">
                     <div class="owl-carousel owl-carousel-login">
                         <div class="item">

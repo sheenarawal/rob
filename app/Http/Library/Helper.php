@@ -145,6 +145,8 @@ function itemCount($auction_id)
     return $auction_items;
 }
 
+
+
 function getSiteSetting()
 {
     $data = \App\Models\SiteSetting::all();
@@ -154,6 +156,17 @@ function getSiteSetting()
     }
 
     return $res;
+}
+function site_logo()
+{
+    $logo = \App\Models\SiteSetting::where('meta_key','site_logo')->latest()->first();
+    if ($logo){
+        $data = asset('siteimages/'.$logo->meta_value);
+    }else{
+        $data = asset('frontend/img/favicon.png');
+    }
+    return $data;
+
 }
 
 function getLanguages()
@@ -352,6 +365,25 @@ function cate_nav()
 
     return \App\Models\Category::all();
 
+}
+
+function videos_by_Cat($category_id=null,$cate_ids)
+{
+    $video = $cate_video = [];
+    if ($category_id){
+        $cate_video[] = \App\Models\VideoCategory::where('category_id',$category_id)->pluck('video_id')->toArray();
+    }
+    if ($cate_ids){
+        foreach ($cate_ids as $id){
+            $cate_video[] = \App\Models\VideoCategory::where('category_id',$id->category_id)->pluck('video_id')->toArray();
+        }
+    }
+    if(count($cate_video)>0){
+        $cate =  call_user_func_array('array_merge', $cate_video);
+        $cate = array_values($cate);
+        $video = \App\Models\Video::whereIn('id',$cate)->get();
+    }
+    return $video;
 }
 
 function video_like($user_id,$video_id)
