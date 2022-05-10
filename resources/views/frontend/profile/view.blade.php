@@ -5,6 +5,7 @@
         <!-- Sidebar -->
         @include('layouts.navbars.fesidebar')
 
+        <div id="content-wrapper">
         <div class="single-channel-page" id="content-wrapper">
             <div class="single-channel-image">
                 @if($profile && $profile->cover_photo)
@@ -14,20 +15,22 @@
                 @endif
                 <div class="channel-profile">
                     @if($profile && $profile->profile_photo)
-                    <img class="channel-profile-img" alt="" src="{{asset($profile->profile_photo)}}">
+                        <img class="channel-profile-img" alt="" src="{{asset($profile->profile_photo)}}">
                     @else
                         <img class="channel-profile-img" alt="" src="{{asset('frontend/img/s2.png')}}">
                     @endif
+                    @php $links = ['facebook_link','twitter_link','google_link'] @endphp
                     @if($profile)
-                        @php $links = ['facebook_link','twitter_link','google_link'] @endphp
-                        <div class="social hidden-xs">
-                            Social:
-                            @foreach($links as $link)
-                                @if( $profile->$link)&nbsp;
+                        @if($profile->facebook_link || $profile->twitter_link || $profile->google_link)
+                            <div class="social hidden-xs">
+                                Social:
+                                @foreach($links as $link)
+                                    @if( $profile->$link)&nbsp;
                                     <a class="fb" href="{{$profile->$link}}">{{str_replace('_link','',$link)}}</a>
-                                @endif
-                            @endforeach
-                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -47,19 +50,18 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="nav navbar-nav mr-auto" id="myTab" role="tablist">
-                            <li class="nav-item ">
-                                <a class="nav-link active" id="video-tab" data-toggle="tab" href="#video" role="tab"
-                                   aria-controls="video" aria-selected="true">Videos</a>
+                            <li class="nav-item {{$tag == 'video'?'active':''}}">
+                                <a class="nav-link" href="{{route('account.index','video')}}">Videos</a>
                             </li>
                             <li class="nav-item d-none">
                                 <a class="nav-link" id="playlist-tab" data-toggle="tab" href="#playlist" role="tab"
                                    aria-controls="playlist" aria-selected="true">Playlist</a>
                             </li>
                             @if($user->id == \Illuminate\Support\Facades\Auth::id())
-                            <li class="nav-item">
-                                <a class="nav-link" id="challenges-tab" data-toggle="tab" href="#challenges" role="tab"
-                                   aria-controls="challenges" aria-selected="true">Challenges</a>
-                            </li>
+                                <li class="nav-item {{$tag == 'challenge'?'active':''}}">
+                                    <a class="nav-link" id="challenges-tab"
+                                       href="{{route('account.index','challenge')}}">Challenges</a>
+                                </li>
                             @endif
                             <li class="nav-item d-none">
                                 <a class="nav-link" id="discussion-tab" data-toggle="tab" href="#discussion" role="tab"
@@ -95,7 +97,8 @@
             </div>
             <div class="container-fluid">
                 <div class="video-block section-padding tab-content" id="myTabContent">
-                    <div class="col tab-pane fade show active" id="video" role="tabpanel" aria-labelledby="video-tab">
+                    <div class="col tab-pane fade {{$tag == 'video'?'show active':''}}" id="video" role="tabpanel"
+                         aria-labelledby="video-tab">
                         <div class="row">
                             <div class="col-md-12 d-none">
                                 <div class="main-title">
@@ -116,120 +119,97 @@
                                     <h6>Videos</h6>
                                 </div>
                             </div>
-                            @php $i = 0; @endphp
-                            @foreach($videos as $video)
-                                <div class="col-xl-3 col-sm-6 mb-3">
-                                    <div class="video-card">
-                                        <div class="video-card-image">
-                                            <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                                            <a href="{{route('video.view',$video->slug)}}">
-                                                <video class="img-fluid video_list_item"
-                                                       src="{{asset($video->videolink)}}"
-                                                       onloadedmetadata="get_duration()"></video>
-                                            </a>
-                                            <div class="time duaration_{{$i}}">00:00</div>
-                                        </div>
-                                        <div class="video-card-body">
-                                            <div class="video-title">
-                                                <a href="{{route('video.view',$video->slug)}}">{{$video->title}}</a>
-                                            </div>
-                                            <div class="video-page text-success">
-                                                @if(count($video->Category)>0)
-                                                    @foreach($video->Category as $cateData)
-                                                        @if($cateData->CategoryDetail)
-                                                            <a data-placement="top" data-toggle="tooltip"
-                                                               href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
-                                                               data-original-title="Verified">
-                                                                {{ucfirst($cateData->CategoryDetail->title)}}
-                                                                <i class="fas fa-check-circle text-success"></i>
-                                                            </a>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                            <div class="video-view">
-                                                <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @php($i++)
-                            @endforeach
+                            @include('frontend.video.video_load')
                         </div>
                         {{ $videos->links('vendor.pagination.account_pager') }}
                     </div>
-                    <div class="col tab-pane fade" id="playlist" role="tabpanel" aria-labelledby="playlist-tab">
+                    <div class="col tab-pane fade {{$tag == 'playlist'?'show active':''}}" id="playlist" role="tabpanel"
+                         aria-labelledby="playlist-tab">
 
                         <div class="row">
 
                         </div>
                     </div>
                     @if($user->id == \Illuminate\Support\Facades\Auth::id())
-                    <div class="col tab-pane fade" id="challenges" role="tabpanel" aria-labelledby="challenges-tab">
+                        <div class="col tab-pane fade {{$tag == 'challenge'?'show active':''}}" id="challenges"
+                             role="tabpanel" aria-labelledby="challenges-tab">
 
-                        <div class="row">
-                            <div class="col-md-9 mx-auto">
-                                <table class="table">
-                                    <thead>
+                            <div class="row">
+                                <div class="col-md-9 mx-auto">
+                                    <table class="table">
+                                        <thead>
                                         <tr>
                                             <th scope="col">#</th>
                                             <th scope="col">User Name</th>
                                             <th scope="col">Video</th>
+                                            <th scope="col">Date</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                    @php($i=1)
-                                    @foreach($challenges as $challenge)
-                                        <tr>
-                                            <th scope="row">{{$i}}</th>
-                                            <td>{{$challenge->userDetail?$challenge->userDetail->display_name:''}}</td>
-                                            <td>
-                                                @if($challenge->videoDetail)
-                                                    <video class="" src="{{asset($challenge->videoDetail->videolink)}}"
-                                                           onloadedmetadata="get_duration()" style="width: 260px;max-height: 260px"></video>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($challenge->status == 1)
-                                                    <span class="badge badge-warning">Pending</span>
-                                                @endif
-                                                @if($challenge->status == 2)
-                                                    <span class="badge badge-success">Accepted</span>
-                                                @endif
-                                                @if($challenge->status == 3)
-                                                    <span class="badge badge-danger">Reject</span>
-                                                @endif
+                                        </thead>
+                                        <tbody>
+                                        @php($i=1)
+                                        @foreach($challenges as $challenge)
+                                            <tr>
+                                                <th scope="row">{{$i}}</th>
+                                                <td>{{$challenge->userDetail?$challenge->userDetail->display_name:''}}</td>
+                                                <td>
+                                                    @if($challenge->videoDetail)
+                                                        <video class="img-fluid challeng_v"
+                                                               src="{{asset($challenge->videoDetail->videolink)}}"
+                                                               onloadedmetadata="get_duration()"
+                                                               style="width: 260px;max-height: 260px"></video>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    {{\Carbon\Carbon::parse($challenge->created_at)->diffForHumans()}}
+                                                </td>
+                                                <td>
+                                                    @if($challenge->status == 1)
+                                                        <span class="badge badge-warning">Pending</span>
+                                                    @endif
+                                                    @if($challenge->status == 2)
+                                                        <span class="badge badge-success">Accepted</span>
+                                                    @endif
+                                                    @if($challenge->status == 3)
+                                                        <span class="badge badge-danger">Reject</span>
+                                                    @endif
 
-                                            </td>
-                                            <td>
-                                                <a href="{{route('challenge.status',[$challenge,2])}}" class="btn btn-success">Accept</a>
-                                                <a href="{{route('challenge.status',[$challenge,3])}}" class="btn btn-danger">Reject</a>
-                                            </td>
-                                        </tr>
-                                        @php($i++)
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                                </td>
+                                                <td>
+                                                    @if($challenge->status == 1)
+                                                        <a href="{{route('challenge.status',[$challenge,2])}}"
+                                                           class="btn btn-success">Accept</a>
+                                                        <a href="{{route('challenge.status',[$challenge,3])}}"
+                                                           class="btn btn-danger">Reject</a>
+                                                    @endif
+
+                                                </td>
+                                            </tr>
+                                            @php($i++)
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9 mx-auto">
+                                    <hr>
+                                    @if($challenges)
+                                        {{ $challenges->links('vendor.pagination.account_pager') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-9 mx-auto">
-                                <hr>
-                                @if($challenges)
-                                    {{ $challenges->links('vendor.pagination.account_pager') }}
-                                @endif
-                            </div>
-                        </div>
-                    </div>
                     @endif
-                    <div class="col tab-pane fade" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
+                    <div class="col tab-pane fade {{$tag == 'discussion'?'show active':''}}" id="discussion"
+                         role="tabpanel" aria-labelledby="discussion-tab">
 
                         <div class="row">discution
                         </div>
                     </div>
-                    <div class="col tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <div class="col tab-pane fade {{$tag == 'about'?'show active':''}}" id="about" role="tabpanel"
+                         aria-labelledby="about-tab">
 
                         <div class="row">
 
@@ -240,32 +220,41 @@
             </div>
             <!-- /.container-fluid -->
 
-            @include('layouts.footers.fefooter');
             <!-- /.content-wrapper -->
         </div>
-        @stop
 
-        @push('frontend_script')
-            <script>
-                $(document).ready(function () {
-                    let video = $(".video_list_item");
-                    video.each(function () {
-                        $(this).mouseover(function () { this.play(); });
-                        $(this).mouseout(function () { this.pause(); });
-                    })
-                })
-                function get_duration() {
-                    $(".video_list_item").each(function (index, element) {
-                        var value = element.duration;
-                        if (value){
-                            var duration_min = Math.floor(value / (3600 / 60));
-                            var duration_sec = Math.floor(value % 60);
-                            var min = (duration_min < 9) ? '0'+duration_min:duration_min;
-                            var sec = (duration_sec < 9) ? '0'+duration_sec:duration_sec;
-                            var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
-                        }
-                    });
+        @include('frontend.footer');
+        </div>
 
+    </div>
+@stop
+
+@push('frontend_script')
+    <script>
+        $(document).ready(function () {
+            let video = $(".video_list_item");
+            video.each(function () {
+                $(this).mouseover(function () {
+                    this.play();
+                });
+                $(this).mouseout(function () {
+                    this.pause();
+                });
+            })
+        })
+
+        function get_duration() {
+            $(".video_list_item").each(function (index, element) {
+                var value = element.duration;
+                if (value) {
+                    var duration_min = Math.floor(value / (3600 / 60));
+                    var duration_sec = Math.floor(value % 60);
+                    var min = (duration_min < 9) ? '0' + duration_min : duration_min;
+                    var sec = (duration_sec < 9) ? '0' + duration_sec : duration_sec;
+                    var elemtent_get = $('.duaration_' + index).text(min + ':' + sec)
                 }
-            </script>
-    @endpush
+            });
+
+        }
+    </script>
+@endpush

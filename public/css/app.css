@@ -10903,4 +10903,11 @@ a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
-
+#st-1 .st-btn > img {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  position: relative;
+  top: 20px;
+  vertical-align: top;
+}

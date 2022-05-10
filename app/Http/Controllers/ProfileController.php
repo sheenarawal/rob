@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -23,6 +24,10 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail(Auth::id());
         $profile = Profile::firstWhere('user_id',Auth::id());
+        $valid = $this->valid($request->all());
+        if ($valid->fails()){
+            return Redirect::back()->withErrors($valid->messages())->with('error',$valid->messages()->first());
+        }
         if ($file = $request->file('profile_photo')){
             $type = $file->getClientOriginalExtension();
             $name = 'photo-' . time() . '.' . $type;
@@ -68,6 +73,14 @@ class ProfileController extends Controller
         }
         $user->update(['first_name'=>$request->first_name,'last_name'=>$request->last_name]);
         return Redirect::back()->with('success','Profile Update Successfully');
+    }
+
+    public function valid($data)
+    {
+        return Validator::make($data,[
+            'cover_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
     }
 
     public function destroy(Profile $profile)

@@ -96,7 +96,7 @@
                                         <div class="form-group">
                                             <label for="recording_date">Recording Date</label>
                                             <input type="date" name="recording_date" id="recording_date"
-                                                   class="form-control">
+                                                   class="form-control" value="{{date('Y-m-d')}}">
                                             <span class="error-message"></span>
                                         </div>
                                     </div>
@@ -174,7 +174,7 @@
                             <hr>
                             <div class="terms text-center">
                                 <p class="mb-0">There are many variations of passages of Lorem Ipsum available, but the
-                                    majority <a href="#">Terms of Service</a> and <a href="#">Community Guidelines</a>.
+                                    majority <a href="{{route('term_condition')}}">Terms of Service</a> and <a href="{{route('term_condition')}}">Community Guidelines</a>.
                                 </p>
                                 <p class="hidden-xs mb-0">Ipsum is therefore always free from repetition, injected
                                     humour, or non</p>
@@ -185,7 +185,7 @@
             </div>
             <!-- /.container-fluid -->
             <!-- Sticky Footer -->
-            @include('layouts.footers.fefooter');
+            @include('frontend.footer');
         </div>
         <!-- /.content-wrapper -->
     </div>

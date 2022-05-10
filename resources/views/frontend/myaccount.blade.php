@@ -98,32 +98,7 @@
                   </div>
                   </div>
                   <div class="row">
-                  
-                  @foreach($videos as $video)
-                     <div class="col-xl-3 col-sm-6 mb-3">
-                        <div class="video-card">
-                           <div class="video-card-image">
-                              <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                              <a href="{{route('video.view',$video->slug)}}"><video id="myVid" width="100%" height="auto" loop>
-                                        <source src="{{asset($video->videolink)}}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video></a>
-                             <!-- <div class="time">1:00</div>-->
-                           </div>
-                           <div class="video-card-body">
-                              <div class="video-title text-uppercase">
-                                 <a href="#">{{$video->title}}</a>
-                              </div>
-                             <!-- <div class="video-page text-success">
-                                 Education  <a title="" data-placement="top" data-toggle="tooltip" href="#" data-original-title="Verified"><i class="fas fa-check-circle text-success"></i></a>
-                              </div>-->
-                              <div class="video-view">
-                              <i class="fas fa-calendar-alt"></i> {{$video->recording_date }}
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     @endforeach
+                     @include('frontend.video.video_load')
                   </div>
                </div>
                <hr class="mt-0">
@@ -277,9 +252,10 @@
             </div>
             <!-- /.container-fluid -->
             <!-- Sticky Footer -->
-            @include('layouts.footers.fefooter');
+            @include('frontend.footer');
          </div>
          <!-- /.content-wrapper -->
+
       </div>
       <!-- /#wrapper -->
       <!-- Scroll to Top Button-->

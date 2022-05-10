@@ -128,6 +128,7 @@
                 </li>
 
                 
+                
                 <li class="nav-item d-none">
                     <a class="nav-link" href="{{ route('pagecontent.index') }}">
                         <i class="ni ni-books text-blue"></i> {{ __('Page Content') }}

@@ -23,7 +23,7 @@
 <section class="login-main-wrapper">
     <div class="container-fluid pl-0 pr-0">
         <div class="row no-gutters">
-            <div class="col-md-5 p-5 bg-white full-height">
+            <div class="col-md-5 mx-auto p-5 bg-white full-height">
                 <div class="login-main-left">
                     <div class="text-center mb-5 login-main-left-header pt-4">
                         <img src="{{ site_logo() }}" class="img-fluid" alt="LOGO">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7 d-md-block d-none">
+            <div class="col-md-7 d-none">
                 <div class="login-main-right bg-white p-5 mt-5 mb-5">
                     <div class="owl-carousel owl-carousel-login">
                         <div class="item">

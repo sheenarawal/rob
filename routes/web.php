@@ -32,6 +32,12 @@ Route::get('/updateapp', function () {
     Artisan::call('dump-autoload');
     echo 'dump-autoload complete';
 });
+Route::get('/term-condition', function () {
+    return view('frontend.term');
+})->name('term_condition');
+Route::get('/privacy-policies', function () {
+    return view('frontend.privacy');
+})->name('privacy_policies');
 
 Route::group(['middleware'=>'guest'],function (){
     Route::match(['get','post'],'/login', [AuthController::class,'login'])->name('login');
@@ -43,8 +49,12 @@ Route::group(['middleware'=>'guest'],function (){
     });
 });
 Route::group(['middleware'=>'auth'],function (){
+    Route::match(['get','post'],'login_redirect', [AuthController::class,'login_redirect'])->name('login_redirect');
     Route::match(['get','post'],'logout', [AuthController::class,'logout'])->name('logout');
-
+          // info page
+    Route::post('/subscribe', [SubscribeController::class,'store'])->name('subscribe.store');
+    Route::get('/contact', 'HomeController@contact')->name('contact');
+    Route::get('/about', 'HomeController@about')->name('about');
     Route::get('/', [VideoController::class, 'index'])->name('index');
     //Route::post('uploadVideo', [HomeController::class, 'uploadVideo'])->name('uploadVideo');
     Route::get('/f/{filter?}', [VideoController::class, 'filter'])->name('video.filter');
@@ -62,10 +72,11 @@ Route::group(['middleware'=>'auth'],function (){
     });
     Route::group(['prefix'=>'account','as'=>'account.'],function (){
         Route::get('/page/{tag?}', 'HomeController@index')->name('index');
-        Route::get('/view/token={id?}/{name?}', 'HomeController@show')->name('show');
+        Route::get('/view/{tag?}/token={id?}/{name?}', 'HomeController@show')->name('show');
         Route::get('video', 'HomeController@video')->name('video');
         Route::get('edit', [ProfileController::class,'index'])->name('profile');
         Route::post('update', [ProfileController::class,'update'])->name('update');
+   
     });
 
     Route::group(['prefix'=>'challenge','as'=>'challenge.'],function (){
@@ -76,7 +87,7 @@ Route::group(['middleware'=>'auth'],function (){
 });
 Route::get('/search', 'VideoController@search');
 
-Route::get('/admin', 'Admin\LoginController@index')->name('admin_login');
+//Route::get('/admin', 'Admin\LoginController@index')->name('admin_login');
 Route::group(['middleware' => ['auth','isAdmin'],'prefix'=>'admin','namespace'=>'Admin'], function () {
 
     Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
@@ -140,4 +151,12 @@ Route::group(['middleware' => ['auth','isAdmin'],'prefix'=>'admin','namespace'=>
     Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
     Route::get('site_settings', ['as' => 'site_settings', 'uses' => 'SettingsController@index']);
     Route::post('site_settings_save', ['as' => 'site_settings.save', 'uses' => 'SettingsController@save']);
+
+    //contact us and info page
+    Route::get('contact_us', ['as' => 'contact_us', 'uses' => 'ContactusController@index']);
+    Route::get('about_us', ['as' => 'about_us', 'uses' => 'AboutusController@index']);
+    Route::post('about_us_save', ['as' => 'about_us.save', 'uses' => 'AboutusController@save']);
+    Route::post('contact_us_save', ['as' => 'contact_us.save', 'uses' => 'ContactusController@save']);
+    /*Route::get('term_condition', ['as' => 'term_condition', 'uses' => 'ContactusController@termCondition']);
+    Route::post('save_terms', ['as' => 'contact_us.save_terms', 'uses' => 'ContactusController@saveTerms']);*/
 });

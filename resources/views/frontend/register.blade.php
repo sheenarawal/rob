@@ -18,18 +18,42 @@
     <!-- Owl Carousel -->
     <link rel="stylesheet" href="{{ asset('frontend') }}/vendor/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="{{ asset('frontend') }}/vendor/owl-carousel/owl.theme.css">
+    <style>
+        /* width */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px grey;
+            border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #07bf67 0%,#0cded5 100%);
+            border-radius: 10px;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(-45deg, #07bf67 0%,#0cded5 100%);
+        }
+    </style>
 </head>
 <body class="login-main-body">
 <section class="login-main-wrapper">
     <div class="container-fluid pl-0 pr-0">
         <div class="row no-gutters">
-            <div class="col-md-5 p-5 bg-white full-height">
+            <div class="col-md-5 mx-auto p-5 bg-white full-height" style="overflow-y: auto">
                 <div class="login-main-left">
                     <div class="text-center mb-5 login-main-left-header pt-4">
-                        <img src="{{ asset('frontend') }}/img/favicon.png" class="img-fluid" alt="LOGO">
-                        <h5 class="mt-3 mb-3">Welcome to Poprival</h5>
+                        <img src="{{site_logo()}}" class="img-fluid" alt="LOGO">
+                        @php($setting = getSiteSetting())
+                        <h5 class="mt-3 mb-3">{!! isset($setting['login_tag_line'])?$setting['login_tag_line']:'Put your musical talents to the test' !!}</h5>
 
-                        @if (session()->has('success'))
+                    @if (session()->has('success'))
                             <div class="notification">
 
                                 <div class="alert alert-primary">  {!! session('success') !!}</div>
@@ -44,41 +68,51 @@
                             <label>First Name</label>
                             <input type="text" class="form-control" placeholder="First Name" name="firstname"
                                    value="{{ old('firstname') }}">
+                            @error('firstname')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('firstname')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
                         <div class="form-group">
                             <label>Last Name</label>
                             <input type="text" class="form-control" placeholder="Last Name" name="lastname"
                                    value="{{ old('lastname') }}">
+                            @error('lastname')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('lastname')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
                         <div class="form-group">
                             <label>Display Name</label>
                             <input type="text" class="form-control" placeholder="Display Name" name="display_name"
                                    value="{{ old('display_name') }}">
+                            @error('display_name')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('display_name')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
                         <div class="form-group">
                             <label>User Email </label>
                             <input type="email" class="form-control" placeholder="Email Id" name="email"
                                    value="{{ old('email') }}">
+                            @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('email')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
                         <div class="form-group">
                             <label>Password</label>
                             <input type="password" class="form-control" placeholder="Password" name="password">
+                            @error('password')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
-                        @error('password')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
+                        <div class="form-group">
+                            <!--                            <label>Password</label>-->
+                            <input type="checkbox" class="" id="terms" value="t&c" name="terms" {{ old('terms')=='t&c'?'checked':''}}>
+                            <label for="terms">Accept all <a href="{{route('term_condition')}}">Terms of Service</a> and <a href="{{route('privacy_policies')}}">Privacy Policies</a>.</label><br>
+
+                            @error('terms')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-outline-primary btn-block btn-lg">Sign Up</button>
                         </div>
@@ -86,9 +120,16 @@
                     <div class="text-center mt-5">
                         <p class="light-gray">Already have an Account? <a href="{{route('login')}}">Sign In</a></p>
                     </div>
+                    <div class="terms text-center">
+                        <p class="mb-0">There are many variations of passages of Lorem Ipsum available, but the
+                            majority <a href="{{route('term_condition')}}">Terms of Service</a> and <a href="{{route('privacy_policies')}}">Privacy Policies</a>.
+                        </p>
+                        <p class="hidden-xs mb-0">Ipsum is therefore always free from repetition, injected
+                            humour, or non</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-7 d-none">
                 <div class="login-main-right bg-white p-5 mt-5 mb-5">
                     <div class="owl-carousel owl-carousel-login">
                         <div class="item">

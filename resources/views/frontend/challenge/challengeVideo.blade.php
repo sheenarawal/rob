@@ -96,7 +96,7 @@
                                         <div class="form-group">
                                             <label for="recording_date">Recording Date</label>
                                             <input type="date" name="recording_date" id="recording_date"
-                                                   class="form-control">
+                                                   class="form-control" value="{{date('Y-m-d')}}">
                                             <span class="error-message"></span>
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@
             </div>
             <!-- /.container-fluid -->
             <!-- Sticky Footer -->
-            @include('layouts.footers.fefooter');
+            @include('frontend.footer');
         </div>
         <!-- /.content-wrapper -->
     </div>

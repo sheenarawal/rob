@@ -62,13 +62,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="first_name">Profile Photo</label>
-                                    <input type="file" value="{{$user->first_name}}" class="form-control"
+                                    <input type="file" value="{{$user->first_name}}" class="form-control" accept="image/*"
                                            id="first_name" placeholder="First Name" name="profile_photo">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="cover_photo">Cover Photo</label>
-                                    <input type="file" value="{{$user->last_name}}" class="form-control" id="cover_photo"
-                                           placeholder="Last Name" name="cover_photo">
+                                    <input type="file" value="{{$user->last_name}}" accept="image/*" name="cover_photo"
+                                           class="form-control" id="cover_photo" placeholder="Last Name">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -105,6 +105,7 @@
                     </div>
                 </div>
             </div>
+            @include('frontend.footer')
         </div>
     </div>
 @stop

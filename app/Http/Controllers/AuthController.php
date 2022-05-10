@@ -36,14 +36,7 @@ class AuthController extends Controller
 
             $credentials = $request->only('email', 'password');
             if (Auth::attempt($credentials)) {
-                $role = Auth::user()->role;
-                if ($role == "admin") {
-                    return Redirect::route('dashboard')->with('success','Welcome Back');
-                } else  {
-                    $userid = Auth::user()->id;
-                    $videos = Video::where(['userid' => $userid])->get();
-                    return Redirect::route('account.index')->with('success','Welcome Back');
-                }
+                return Redirect::route('login_redirect');
             } else {
                 return Redirect::back()->with('error', 'Invalid login details');
             }
@@ -60,11 +53,13 @@ class AuthController extends Controller
                 'password' => 'required|min:8',
                 'firstname' => 'required',
                 'lastname' => 'required',
+                'terms' => 'required',
             ], [
                 'email.required' => 'Email address is required',
                 'email.email' => 'Invalid email address',
                 'firstname.required' => 'Firstname is required',
                 'lastname.required' => 'Lastname is required',
+                'terms.required' => 'Terms and Conditions are required',
 
             ]);
 
@@ -88,16 +83,19 @@ class AuthController extends Controller
                 'view' => 'welcome_email',
                 'subject' => 'Welcome to Pop Rival'
             );
-            Mail::to($request->email)->send(new \App\Mail\commonMail($details));
+            //Mail::to($request->email)->send(new \App\Mail\commonMail($details));
 
             return Redirect::route('login')->with('success', 'Registered Successfully!!!');
         }
         return view('frontend.register');
     }
 
-    public function editInfo()
+    public function login_redirect()
     {
-
+        if (Auth::user()&& Auth::user()->role==0){
+            return Redirect::route('dashboard')->with('success','Welcome Back');
+        }
+        return Redirect::route('index')->with('success','Welcome Back');
     }
 
     public function logout()

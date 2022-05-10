@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Challenge;
+use App\Models\ChallengeVideo;
 use App\Models\User;
 use App\Models\VideoCategory;
 use App\Models\VideoTag;
@@ -19,17 +20,34 @@ use Illuminate\Support\Facades\Validator;
 class VideoController extends Controller
 {
 	//
-	public function index()
+	public function index(Request $request)
 	{
 	    $categories = Category::orderBy('id','desc')->get();
-        $videos =  Video::orderBy('id','desc')->paginate(20);
+        $videos =  Video::orderBy('id','desc')->paginate(12);
+        if ($request->ajax()) {
+            $view = view('frontend.video.video_load',compact('videos'))->render();
+            return response()->json(['html'=>$view]);
+        }
         return view('frontend.video.index', compact('videos','categories'));
 	}
+
+    public function on_load(Request $request)
+    {
+        $posts = Video::paginate(5);
+        if ($request->ajax()) {
+            $view = view('data',compact('posts'))->render();
+            return response()->json(['html'=>$view]);
+        }
+        return view('my-post',compact('posts'));
+    }
+
 	function show($slug)
 	{
 		$video = Video::where(['slug' => $slug])->first();
 		if (!$video){ return abort('404');}
 		$challenge = Challenge::where(['video_id'=>$video->id,'user_id'=>Auth::id()])->first();
+        $challenge_videos_id = ChallengeVideo::where('video_id',$video->id)->pluck('challenge_video');
+		$challenge_videos = Video::withCount('likes')->orderBy('likes_count', 'desc')->whereIn('id',$challenge_videos_id)->get();
 		$user_Details  = User::where('id',Auth::id())->first();
 		//dd($challenge);
         $video_list = Video::where('slug','!=',$slug)->get();
@@ -37,7 +55,7 @@ class VideoController extends Controller
 
 			abort(404);
 		}
-		return view('frontend.video.show', compact('video','video_list','challenge','user_Details'));
+		return view('frontend.video.show', compact('video','video_list','challenge','user_Details','challenge_videos'));
 	}
 	function search()
 	{
@@ -81,12 +99,23 @@ class VideoController extends Controller
 
         if ($file = $request->file('video')) {
 
-            $name = "video-" . rand() . "-" . time() . "." . $file->getClientOriginalExtension();
+            $temp_name = "video-" . rand() . "-" . time();
+            $name = $temp_name. "." . $file->getClientOriginalExtension();
             $temp = 'videos/temp/' . $name;
-            Storage::disk('public')->put($temp, file_get_contents($file));
+
+            $poster_exectPath = public_path('upload/poster');
+            $poster_temPath = public_path('videos_poster/temp');
 
             $exectPath = public_path('videos/upload');
             $temPath = public_path('videos/temp');
+            $poster_path = $poster_exectPath."/".$temp_name.".png";
+            $poster_name = "upload/poster/".$temp_name.".png";
+
+            Storage::disk('public')->put($temp, file_get_contents($file));
+
+            $p_cmd = "ffmpeg -i ".$temPath."/".$name." -ss 00:00:01.000 -vframes 1 ".$poster_path;
+            $res = shell_exec($p_cmd);
+
             if ($request->video_duration > 120){
                 $time = '00:02:00';
                 $cmd ="ffmpeg -ss ".$time." -i ".$temPath."/".$name." -to ".$time." -c copy ".$exectPath."/".$name;
@@ -96,11 +125,13 @@ class VideoController extends Controller
                 Storage::disk('s3')->put('videos/'.$name, file_get_contents($temPath.'/'.$name));
             }
 
+
             $file_url = Storage::disk('s3')->url('videos/'.$name);
             //'duration'=>$request->video_duration,
             $inputData = [
                 'title'=>$request->title,
                 'desc'=>$request->description,
+                'poster'=>$poster_name,
                 'recording_date'=>$request->recording_date,
                 'recording_location'=>$request->recording_location,
                 'video_language'=>$request->language,

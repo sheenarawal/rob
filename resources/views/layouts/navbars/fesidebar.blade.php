@@ -3,11 +3,11 @@
     <li class="nav-item {{ request()->is('/*') ? 'active' : ''}}">
         <a class="nav-link" href="{{route('index')}}">
             <i class="fas fa-fw fa-home "></i>
-            <span>Home</span>
+            <span>Explore</span>
         </a>
     </li>
     <li class="nav-item {{ request()->is('account*') ? 'active' : ''}}">
-        <a class="nav-link" href="{{route('account.index')}}">
+        <a class="nav-link" href="{{route('account.index','video')}}">
             <i class="fas fa-fw fa-video"></i>
             <span>My Account</span>
         </a>
@@ -33,5 +33,7 @@
             @endforeach
         </div>
     </li>
+
+    
 
 </ul>

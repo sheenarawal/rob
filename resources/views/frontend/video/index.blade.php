@@ -63,58 +63,16 @@
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="row ">
-                            @if($videos && !empty($videos))
-                                @php($i = 1)
-                                @foreach($videos as $video)
-                                    <div class="col-xl-3 col-sm-6 mb-3 align-items-stretch">
-                                        <div class="video-card">
-                                            <div class="video-card-image">
-                                                <a class="play-icon" href="#"><i class="fas fa-play-circle"></i></a>
-                                                <a href="{{route('video.view',$video->slug)}}">
-                                                    <video id="myVid" class="img-fluid video_list_item"
-                                                           src="{{asset($video->videolink)}}" muted
-                                                           onloadedmetadata="get_duration()"></video>
-                                                </a>
-                                                <div class="time duaration_">{{date('i:s',$video->duration)}}</div>
-                                            </div>
-                                            <div class="video-card-body">
-                                                <div class="video-title text-uppercase">
-                                                    <a href="#">{{$video->title}}</a>
-                                                </div>
-                                                <div class="video-page text-success">
-                                                    @if(count($video->Category)>0)
-                                                        @foreach($video->Category as $cateData)
-                                                            @if($cateData->CategoryDetail)
-                                                                <a data-placement="top"
-                                                                   data-toggle="tooltip"
-                                                                   href="{{route('video.category',$cateData->CategoryDetail->slug)}}"
-                                                                   data-original-title="Verified">
-                                                                    {{ucfirst($cateData->CategoryDetail->title)}}
-                                                                    <i class="fas fa-check-circle text-success"></i>
-                                                                </a>
-                                                            @endif
-                                                        @endforeach
-                                                    @endif
-                                                </div>
-                                                <div class="video-view">
-                                                    <i class="fas fa-calendar-alt"></i> {{\Carbon\Carbon::parse($video->recording_date)->diffForHumans() }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    @php($i++)
-                                @endforeach
-                            @endif
+                        <div class="row video_outer">
+                            @include('frontend.video.video_load')
                         </div>
-                        <div class="row justify-content-center mt-md-4">
-                            @if($videos)
-                            {{ $videos->links('vendor.pagination.account_pager') }}
-                            @endif
+                        <div class="row">
+                            <div class="col ajax-load"></div>
                         </div>
                     </div>
                 </div>
             </div>
+            @include('frontend.footer')
         </div>
         <hr>
 
@@ -185,6 +143,38 @@
                 }
             });
 
+        }
+    </script>
+
+    <script type="text/javascript">
+        var page = 1;
+        $(window).scroll(function () {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
+                page++;
+                loadMoreData(page);
+            }
+        });
+
+        function loadMoreData(page) {
+            var ajax_load = $('.ajax-load');
+            $.ajax({
+                url: '?page=' + page,
+                type: "get",
+                beforeSend: function () {
+                    ajax_load.show();
+                }
+            })
+                .done(function (data) {
+                    if (data.html == " ") {
+                        ajax_load.html("No more records found");
+                        return;
+                    }
+                    ajax_load.hide();
+                    $(".video_outer").append(data.html);
+                })
+                .fail(function (jqXHR, ajaxOptions, thrownError) {
+                    alert('server not responding...');
+                });
         }
     </script>
 

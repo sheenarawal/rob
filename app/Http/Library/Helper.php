@@ -381,7 +381,7 @@ function videos_by_Cat($category_id=null,$cate_ids)
     if(count($cate_video)>0){
         $cate =  call_user_func_array('array_merge', $cate_video);
         $cate = array_values($cate);
-        $video = \App\Models\Video::whereIn('id',$cate)->get();
+        $video = \App\Models\Video::whereIn('id',$cate)->orderBy('id','desc')->take(20)->get();
     }
     return $video;
 }
@@ -419,4 +419,14 @@ function profile_image($id)
     if ($profile && $profile->profile_photo) {$data = $profile->profile_photo;}
     return  asset($data);
 
+}
+
+function get_subscribe($channel_id)
+{
+    $status = 0;
+    $data = \App\Models\Subscribe::where(['subscriber_id'=>\Illuminate\Support\Facades\Auth::id(),'subscribe_to'=>$channel_id])->first();
+    if ($data){
+        $status = $data->status;
+    }
+    return $status;
 }

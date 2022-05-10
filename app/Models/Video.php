@@ -38,6 +38,10 @@ class Video extends Model
     {
         return $this->hasMany(ChallengeVideo::class ,'video_id','id');
     }
+    public function latest_c_Videos()
+    {
+        return $this->hasMany(ChallengeVideo::class ,'video_id','id')->latest();
+    }
 
 
     public function comments () {
